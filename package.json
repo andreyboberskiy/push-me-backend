@@ -1,0 +1,36 @@
+{
+  "name": "mern",
+  "version": "1.0.0",
+  "description": "Mern learning",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "server": "nodemon app.js",
+    "client": "npm run start --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "sprite-gen": "node client/src/scripts/generateSvgSprite.js --prefix client"
+  },
+  "keywords": [
+    "js",
+    "react",
+    "mern"
+  ],
+  "author": "Kortez",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "config": "^3.3.6",
+    "express": "^4.17.1",
+    "express-validator": "^6.10.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.12.7",
+    "needle": "^2.6.0",
+    "node-html-parser": "^3.3.5"
+  },
+  "devDependencies": {
+    "concurrently": "^6.0.2",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
+    "sexy-require": "^1.1.2"
+  }
+}
