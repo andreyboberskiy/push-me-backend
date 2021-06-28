@@ -1,14 +1,11 @@
 {
-  "name": "mern",
+  "name": "GPB",
   "version": "1.0.0",
-  "description": "Mern learning",
+  "description": "Global parser backend",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "server": "nodemon app.js",
-    "client": "npm run start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "sprite-gen": "node client/src/scripts/generateSvgSprite.js --prefix client"
+    "watch": "nodemon app.js"
   },
   "keywords": [
     "js",
@@ -19,7 +16,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "config": "^3.3.6",
+    "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "express-validator": "^6.10.1",
     "jsonwebtoken": "^8.5.1",

@@ -12,8 +12,8 @@ const ParserController = require("/controllers/parser");
 module.exports = router;
 
 // api/parse/last-items
-router.post(routesByName.parse.lastItems, authMiddleware, [
+router.post(routesByName.parse.lastItemsWrapper, authMiddleware, [
   check("url", "Url is empty").notEmpty(),
-  check("classes", "Empty classes").notEmpty(),
-  ParserController.lastItems,
+  check("selectorsData", "Empty selectors").notEmpty(),
+  ParserController.lastItemsWrapper,
 ]);

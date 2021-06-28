@@ -2,7 +2,7 @@ const HTMLParser = require("node-html-parser");
 const needle = require("needle");
 fs = require("fs");
 
-module.exports.parseLastItems = (parseUrl, selectors) =>
+module.exports.parseLastItemsWithWrapper = (parseUrl, selectorsData) =>
   new Promise((resolve, reject) => {
     try {
       needle.get(parseUrl, { compressed: true }, function (err, res) {
@@ -19,7 +19,9 @@ module.exports.parseLastItems = (parseUrl, selectors) =>
 
         // fs.writeFile("./parseResult.txt", res.body, function (err, data) {});
 
-        const wrappers = DOM.querySelectorAll(selectors.wrapper);
+        const { wrapper, selectorsWithLabel } = selectorsData;
+
+        const wrappers = DOM.querySelectorAll(wrapper);
 
         if (!wrappers.length) {
           reject("Cant find any wrapper. Try another selector");
@@ -28,22 +30,16 @@ module.exports.parseLastItems = (parseUrl, selectors) =>
         wrappers.forEach((wrapper) => {
           let preparedInfo = {};
 
-          selectors.metaInfo.forEach(({ label, selector }) => {
+          selectorsWithLabel.forEach(({ label, selector }) => {
             const selectorDOM = wrapper.querySelector(selector);
+
             if (selectorDOM) {
-              if (label === "Title") {
-                console.log(selectorDOM.childNodes);
-              }
               preparedInfo = {
                 ...preparedInfo,
                 [label]:
                   selectorDOM.rawText.replace(/\s+/g, " ").trim() ||
                   "Not found",
               };
-              // preparedInfo = {
-              //   ...preparedInfo,
-              //   [label]: selectorDOM.structure,
-              // };
             }
           });
           parsedInfo.push(preparedInfo);

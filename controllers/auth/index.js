@@ -1,9 +1,10 @@
 const { validationResult } = require("express-validator");
 const User = require("/models/User");
 const jwt = require("jsonwebtoken");
-const config = require("config");
 const routesByName = require("/routes/routesByName");
 const bcrypt = require("bcryptjs");
+const dotenv = require("dotenv");
+dotenv.config();
 
 AuthController = {
   async signUp(req, res) {
@@ -63,7 +64,7 @@ AuthController = {
         return res.status(400).json({ message: "Password incorrect" });
       }
 
-      const token = jwt.sign({ userId: user.id }, config.get("jwtSecret"), {
+      const token = jwt.sign({ userId: user.id }, process.env.JWT, {
         expiresIn: "1h",
       });
 

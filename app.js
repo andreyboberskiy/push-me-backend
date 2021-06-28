@@ -1,7 +1,9 @@
 const express = require("express");
-const config = require("config");
 const mongoose = require("mongoose");
 require("sexy-require");
+
+const dotenv = require("dotenv");
+dotenv.config();
 
 const routesByName = require("./routes/routesByName");
 
@@ -12,11 +14,11 @@ app.use(express.json({ extended: true }));
 app.use(routesByName.auth.index, require("./routes/auth.routes"));
 app.use(routesByName.parse.index, require("./routes/parser.routes"));
 
-const PORT = config.get("port") || 5000;
+const PORT = process.env.PORT || 4000;
 
 async function start() {
   try {
-    await mongoose.connect(config.get("mongoUri"), {
+    await mongoose.connect(process.env.MONGOOSE, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
       useCreateIndex: true,

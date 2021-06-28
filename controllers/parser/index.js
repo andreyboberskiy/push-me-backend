@@ -1,8 +1,9 @@
-const parseHandlers = require("./handlers");
 const { validationResult } = require("express-validator");
 
+const parseHandlers = require("./handlers");
+
 module.exports = {
-  lastItems: async (req, res) => {
+  lastItemsWrapper: async (req, res) => {
     try {
       const errors = validationResult(req);
 
@@ -12,13 +13,16 @@ module.exports = {
           .json({ errors: errors.array(), message: "Invalid data" });
       }
 
-      const { url, selectors } = req.body;
+      const { url, selectorsData } = req.body;
 
-      const data = await parseHandlers.parseLastItems(url, selectors);
+      const data = await parseHandlers.parseLastItemsWithWrapper(
+        url,
+        selectorsData
+      );
 
       return res.status(201).json({ ...data });
     } catch (e) {
-      res.status(500).json({ message: "Что-то пошло не так, сервер упал" });
+      res.status(500).json({ message: "Internal server error" });
     }
   },
 };
