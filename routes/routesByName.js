@@ -11,7 +11,7 @@ const routesByName = {
   },
   parse: {
     index: `${apiPrefix}${parsePrefix}`,
-    lastItems: "/last-items",
+    lastItemsWrapper: "/last-items-wrapper",
   },
 };
 

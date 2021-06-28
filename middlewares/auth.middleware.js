@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
-const config = require("config");
+const dotenv = require("dotenv");
+dotenv.config();
+
 module.exports = (req, res, next) => {
   if (req.method === "OPTIONS") {
     return next();
@@ -12,7 +14,7 @@ module.exports = (req, res, next) => {
       return res.status(401).json({ message: "Not Authorized" });
     }
 
-    const decoded = jwt.verify(token, config.get("jwtSecret"));
+    const decoded = jwt.verify(token, process.env.JWT);
 
     req.user = decoded;
 
