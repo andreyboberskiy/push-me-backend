@@ -17,3 +17,9 @@ router.post(routesByName.parse.lastItemsWrapper, authMiddleware, [
   check("selectorsData", "Empty selectors").notEmpty(),
   ParserController.lastItemsWrapper,
 ]);
+
+router.post(routesByName.parse.byTextTemplate, authMiddleware, [
+  check("url", "Url is empty").notEmpty(),
+  check("selectors", "Selectors is empty").isArray().notEmpty(),
+  ParserController.byTextTemplate,
+]);

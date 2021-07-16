@@ -2,10 +2,10 @@ const { Router } = require("express");
 const router = Router();
 const { check } = require("express-validator");
 
-const routesByName = require("./routesByName");
+const routesByName = require("/routes/routesByName");
 
 // Controllers
-const AuthController = require("/controllers/auth");
+const AuthController = require("/controllers/auth/index");
 
 module.exports = router;
 
@@ -28,3 +28,5 @@ router.post(
   ],
   AuthController.signIn
 );
+
+// api/auth/
