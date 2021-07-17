@@ -5,7 +5,7 @@ const { check } = require("express-validator");
 const routesByName = require("/routes/routesByName");
 
 // Controllers
-const AuthController = require("/controllers/auth/index");
+const AuthController = require("/controllers/auth");
 
 module.exports = router;
 

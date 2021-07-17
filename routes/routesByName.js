@@ -11,8 +11,10 @@ const routesByName = {
   },
   parse: {
     index: `${apiPrefix}${parsePrefix}`,
-    lastItemsWrapper: "/last-items-wrapper",
-    byTextTemplate: "/by-text-template",
+    byHTMLSelector: "/by-html-selector",
+    byTextQuery: "/by-text-query",
+    byHTMLSelectorWithPage: "/by-html-selector-with-page",
+    byTextQueryWithPage: "/by-text-query-with-page",
   },
 };
 

@@ -11,15 +11,22 @@ const ParserController = require("/controllers/parser");
 
 module.exports = router;
 
-// api/parse/last-items
-router.post(routesByName.parse.lastItemsWrapper, authMiddleware, [
+router.post(routesByName.parse.byHTMLSelector, authMiddleware, [
   check("url", "Url is empty").notEmpty(),
-  check("selectorsData", "Empty selectors").notEmpty(),
-  ParserController.lastItemsWrapper,
+  check("selector", "Empty selector").notEmpty(),
+  ParserController.byHTMLSelector,
 ]);
 
-router.post(routesByName.parse.byTextTemplate, authMiddleware, [
+router.post(routesByName.parse.byHTMLSelectorWithPage, authMiddleware, [
   check("url", "Url is empty").notEmpty(),
-  check("selectors", "Selectors is empty").isArray().notEmpty(),
-  ParserController.byTextTemplate,
+  check("secondPageUrl", "Second page url is empty").notEmpty(),
+  check("selector", "Empty selector query").notEmpty(),
+  check("pageCount", "Page count is empty").notEmpty(),
+  ParserController.byHTMLSelectorWithPage,
+]);
+
+router.post(routesByName.parse.byTextQuery, authMiddleware, [
+  check("url", "Url is empty").notEmpty(),
+  check("selectorQuery", "Empty selector query").notEmpty(),
+  ParserController.byTextQuery,
 ]);

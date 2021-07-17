@@ -3,7 +3,7 @@ const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
 dotenv.config();
 
-const ApiError = require("../../exceptions/api-error");
+const ApiError = require("/exceptions/api-error");
 
 const UserModel = require("/models/User");
 
