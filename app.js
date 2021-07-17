@@ -2,7 +2,7 @@ require("sexy-require");
 const express = require("express");
 const mongoose = require("mongoose");
 
-const errorsMiddleware = require("./middlewares/error.middleware");
+const errorsMiddleware = require("/middlewares/error.middleware");
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -15,6 +15,10 @@ app.use(express.json({ extended: true }));
 
 app.use(routesByName.auth.index, require("/routes/auth.routes"));
 app.use(routesByName.parse.index, require("/routes/parser.routes"));
+app.use(
+  routesByName.parseTemplates.index,
+  require("/routes/parseTemplates.routes")
+);
 app.use(errorsMiddleware);
 
 const PORT = process.env.PORT || 4000;

@@ -4,8 +4,9 @@
   "description": "Global parser backend",
   "main": "app.js",
   "scripts": {
-    "start": "node --inspect app.js ",
-    "dev": "nodemon --inspect app.js "
+    "start": "node app.js",
+    "dev": "nodemon  app.js",
+    "dev:debug": "nodemon --inspect app.js "
   },
   "keywords": [
     "js",
