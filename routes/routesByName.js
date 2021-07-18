@@ -21,6 +21,7 @@ const routesByName = {
     index: `${apiPrefix}${parseTemplatesPrefix}`,
     create: "/create",
     list: "/list",
+    turnParseEnabled: "/turn-parse",
   },
 };
 

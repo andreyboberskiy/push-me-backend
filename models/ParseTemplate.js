@@ -4,7 +4,7 @@ const ParseTemplateSchema = new Schema({
   user: { type: Schema.Types.ObjectId, ref: "User" },
   title: { type: String, required: true },
   enabled: { type: Boolean, required: true, default: false },
-  parseTime: { type: Number, required: true, default: 0 },
+  parseTime: { type: Object, required: true, default: null },
   url: { type: String, required: true },
   dateCreated: { type: Date, default: Date.now },
   selectorsData: {

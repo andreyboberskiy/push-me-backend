@@ -1,4 +1,3 @@
-const { validationResult } = require("express-validator");
 const ApiError = require("/exceptions/api-error");
 
 const ParseServices = require("/services/parser");

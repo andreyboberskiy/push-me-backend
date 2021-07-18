@@ -1,5 +1,6 @@
 const { checkRouteValidation } = require("/services/validation-services");
 const ParseTemplateModel = require("/models/ParseTemplate");
+const CronService = require("/services/cron");
 const ApiError = require("/exceptions/api-error");
 
 class ParseTemplatesController {
@@ -48,15 +49,55 @@ class ParseTemplatesController {
     try {
       checkRouteValidation(req);
 
-      const { offset, userId } = req.body;
+      const { offset, userId, sort } = req.body;
 
-      const list = await ParseTemplateModel.find({ user: userId }).limit(
-        offset || 0
+      const list = await ParseTemplateModel.find(
+        { user: userId },
+        [
+          "title",
+          "selectorsData",
+          "url",
+          "dateCreated",
+          "enabled",
+          "parseTime",
+        ],
+        {
+          skip: offset || 0,
+          limit: 10,
+          sort: { dateCreated: sort === "newest" ? -1 : 1 },
+        }
       );
 
-      console.log(list);
-
       return res.status(201).json({ success: true, list });
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async turnParse(req, res, next) {
+    try {
+      const { id, enabled, parseTime } = req.body;
+
+      const parseTemplate = await ParseTemplateModel.findOne({ _id: id });
+
+      if (!parseTemplate) {
+        throw ApiError.BadRequest("Cant find template with this id");
+      }
+
+      if (enabled && !parseTemplate.enabled) {
+        console.log("must start");
+        CronService.add(id, CronService.getTime(parseTime));
+      }
+      if (!enabled && parseTemplate.enabled) {
+        CronService.stop(id);
+      }
+
+      await ParseTemplateModel.updateOne(
+        { _id: id },
+        { enabled, parseTime: parseTime || 0 }
+      );
+
+      return res.status(200).json({ success: true });
     } catch (e) {
       next(e);
     }
