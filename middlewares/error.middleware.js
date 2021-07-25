@@ -1,4 +1,4 @@
-const ApiError = require("../exceptions/api-error");
+const ApiError = require("/exceptions/api-error");
 
 module.exports = function (err, req, res, next) {
   if (err instanceof ApiError) {
@@ -7,7 +7,8 @@ module.exports = function (err, req, res, next) {
       .json({ message: err.message, errors: err.errors });
   }
   console.log(err);
-  return res
-    .status(500)
-    .json({ message: "Internal Server Error2", error: err });
+  return res.status(500).json({
+    message: "Internal Server Error. Not instance of apiError",
+    error: err,
+  });
 };

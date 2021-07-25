@@ -3,7 +3,7 @@ const router = Router();
 
 const { check } = require("express-validator");
 
-const authMiddleware = require("../middlewares/auth.middleware");
+const authMiddleware = require("/middlewares/auth.middleware");
 
 const routesByName = require("/routes/routesByName");
 

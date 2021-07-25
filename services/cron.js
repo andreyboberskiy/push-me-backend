@@ -1,21 +1,33 @@
 const CronJob = require("cron").CronJob;
 const ApiError = require("/exceptions/api-error");
 
+const ParseTemplateModel = require("/models/ParseTemplate");
+const UserModel = require("/models/User");
+
+const NotificationService = require("/services/notification");
+
 class CronService {
   constructor() {
     this._jobs = {};
   }
   add(id, time, fn) {
     const job = new CronJob(time, fn, null, true);
-    this._jobs[id] = {
-      id,
-      cron: job,
-    };
+    this._jobs[id] = job;
     job.start();
+  }
+  addForNotify(template, user) {
+    console.log({ user });
+    const { _id: id, parseTime } = template;
+
+    this.add(id, this.getTime(parseTime), () =>
+      NotificationService.checkUpdates(template, {
+        telegramChatId: user.telegramChatId,
+      })
+    );
   }
   stop(id) {
     if (!this._jobs[id]) return;
-    this._jobs[id].cron.stop();
+    this._jobs[id]?.stop();
     delete this._jobs[id];
   }
 
@@ -30,28 +42,35 @@ class CronService {
   list() {
     return this._jobs;
   }
-  running(name) {
-    return this._jobs[name].cron.running;
-  }
-  lastDate(name) {
-    return this._jobs[name].cron.lastDate();
-  }
-  nextDates(name) {
-    return this._jobs[name].cron.nextDates();
-  }
+
   getTime(time) {
     try {
       if (time.s) {
         return `*/${time.s} * * * * *`;
       }
       if (time.m) {
-        return `* ${time.m} * * * *`;
+        return `* /${time.m} * * * *`;
       }
       if (time.h) {
-        return `* * ${time.m} * * *`;
+        return `* * /${time.m} * * *`;
       }
     } catch (e) {
       throw ApiError.BadRequest("Cant parse time for cron");
+    }
+  }
+  async startAll() {
+    try {
+      const templates = await ParseTemplateModel.find({ enabled: true });
+      for (let i = 0; i < templates.length; i++) {
+        const user = await UserModel.findById(templates[i].user);
+        if (user) {
+          this.addForNotify(templates[i], user);
+        }
+      }
+
+      console.log("All jobs started. Jobs now: ", this._jobs);
+    } catch (e) {
+      throw ApiError.BadRequest("Cant start all jobs");
     }
   }
 }

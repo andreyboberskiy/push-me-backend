@@ -86,7 +86,12 @@ class ParseTemplatesController {
 
       if (enabled && !parseTemplate.enabled) {
         console.log("must start");
-        CronService.add(id, CronService.getTime(parseTime));
+        CronService.add(id, CronService.getTime(parseTime), () => {
+          console.log("cron func");
+        });
+      }
+      if (!enabled && parseTemplate.enabled) {
+        CronService.stop(id);
       }
       if (!enabled && parseTemplate.enabled) {
         CronService.stop(id);

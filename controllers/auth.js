@@ -59,6 +59,7 @@ class AuthController {
 
       const { accessToken, refreshToken } = await TokenService.generateTokens({
         userId: user._id,
+        telegramChatId: user.telegramChatId || null,
       });
 
       await TokenService.saveToken(user._id, refreshToken);

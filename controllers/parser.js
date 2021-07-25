@@ -76,6 +76,7 @@ class ParserController {
       next(e);
     }
   }
+
   async byHTMLSelectorWithPage(req, res, next) {
     try {
       checkRouteValidation(req);
@@ -90,15 +91,11 @@ class ParserController {
       }
 
       const numberOfPage = parseInt(stringDiff.replace(/[a-zA-Z,?.=]+/, ""));
-      console.log({ numberOfPage });
 
       const reg = new RegExp(`/${numberOfPage}/gi`);
 
-      console.log(stringDiff.replace(reg, 9));
-
       for (let i = 0; i < pageCount; i++) {
         const currentUrl = `${url}${stringDiff.replace(reg, i + 1)}`;
-        console.log({ currentUrl });
       }
 
       // new Array(pageCount).fill("k").forEach((_, index) => {

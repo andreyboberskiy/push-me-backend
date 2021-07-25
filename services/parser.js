@@ -6,7 +6,8 @@ fs = require("fs");
 class ParserService {
   async parseURL(url) {
     try {
-      const res = await needle("get", url, { compressed: true });
+      const encodedURI = encodeURI(url);
+      const res = await needle("get", encodedURI, { compressed: true });
 
       const DOM = HTMLParser.parse(res.body, {
         blockTextElements: {
@@ -17,6 +18,44 @@ class ParserService {
       return DOM;
     } catch (e) {
       throw ApiError.BadRequest("Cant parse this url", [e]);
+    }
+  }
+  async parseByParseTemplate(template) {
+    try {
+      const { url, selectorsData } = template;
+
+      selectorsData.getFrom = 1;
+
+      const DOM = await this.parseURL(url);
+
+      const allParsedElements = DOM.querySelectorAll(selectorsData.parent);
+
+      if (!allParsedElements.length) {
+        throw ApiError.NotFound(
+          `Cant found by this selector: ${selectorsData.parent}. Func: parseByParseTemplate`
+        );
+      }
+
+      const parent =
+        selectorsData.getFrom === -1
+          ? allParsedElements[allParsedElements.length - 1]
+          : allParsedElements[selectorsData.getFrom - 1];
+
+      const textElementsBySelectors = selectorsData.selectors.map(
+        (selector) => {
+          const parsedText =
+            parent
+              .querySelector(selector.value)
+              ?.textContent.replace(/\s+/g, " ")
+              .trim() || false;
+          return { title: selector.title, value: parsedText };
+        }
+      );
+
+      return textElementsBySelectors;
+    } catch (e) {
+      console.log(e);
+      throw ApiError.NotFound(` Func: parseByParseTemplate`, e);
     }
   }
 
