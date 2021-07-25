@@ -1,6 +1,4 @@
 const jwt = require("jsonwebtoken");
-const dotenv = require("dotenv");
-dotenv.config();
 
 module.exports = (req, res, next) => {
   if (req.method === "OPTIONS") {
@@ -16,7 +14,8 @@ module.exports = (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT);
 
-    req.user = decoded;
+    req.body.userId = decoded.userId;
+    req.body.telegramChatId = decoded.telegramChatId;
 
     next();
   } catch (e) {

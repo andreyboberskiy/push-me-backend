@@ -1,10 +1,15 @@
 const { Router } = require("express");
-const router = Router();
 const { check } = require("express-validator");
 
-const routesByName = require("./routesByName");
+const router = Router();
 
-// Controllers
+// configs
+const routesByName = require("/constants/routesByName");
+
+// middlewares
+const checkValidMiddleware = require("/middlewares/checkValid.middleware");
+
+// controllers
 const AuthController = require("/controllers/auth");
 
 module.exports = router;
@@ -16,6 +21,7 @@ router.post(
     check("email", "Invalid email").isEmail(),
     check("password", "Invalid password").isLength({ min: 8 }),
   ],
+  checkValidMiddleware,
   AuthController.signUp
 );
 
@@ -26,5 +32,6 @@ router.post(
     check("email", "Invalid email").normalizeEmail().isEmail(),
     check("password", "Invalid password").exists(),
   ],
+  checkValidMiddleware,
   AuthController.signIn
 );
