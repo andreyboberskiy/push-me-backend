@@ -2,20 +2,25 @@ require("sexy-require");
 const express = require("express");
 const mongoose = require("mongoose");
 
-const errorsMiddleware = require("/middlewares/error.middleware");
-
+// configs
 const dotenv = require("dotenv");
 dotenv.config();
 
+const PORT = process.env.PORT || 5000;
+const routesByName = require("/constants/routesByName");
+
+// middlewares
+const errorsMiddleware = require("/middlewares/error.middleware");
+
+// services
 const CronService = require("/services/cron");
 const TelegramService = require("/services/telegram");
-
-const routesByName = require("/routes/routesByName");
 
 const app = express();
 
 app.use(express.json({ extended: true }));
 
+// routes
 app.use(routesByName.auth.index, require("/routes/auth.routes"));
 app.use(routesByName.parse.index, require("/routes/parser.routes"));
 app.use(
@@ -26,9 +31,9 @@ app.use(
   routesByName.notifications.index,
   require("/routes/notifications.routes")
 );
-app.use(errorsMiddleware);
 
-const PORT = process.env.PORT || 4000;
+// use middlewares
+app.use(errorsMiddleware);
 
 async function start() {
   try {

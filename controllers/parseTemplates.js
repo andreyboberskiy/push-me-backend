@@ -1,13 +1,15 @@
-const { checkRouteValidation } = require("/services/validation-services");
+// models
 const ParseTemplateModel = require("/models/ParseTemplate");
+
+// services
 const CronService = require("/services/cron");
+
+// exceptions
 const ApiError = require("/exceptions/api-error");
 
 class ParseTemplatesController {
   async create(req, res, next) {
     try {
-      checkRouteValidation(req);
-
       const {
         title,
         url,
@@ -47,8 +49,6 @@ class ParseTemplatesController {
 
   async getList(req, res, next) {
     try {
-      checkRouteValidation(req);
-
       const { offset, userId, sort } = req.body;
 
       const list = await ParseTemplateModel.find(

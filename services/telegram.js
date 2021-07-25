@@ -2,6 +2,7 @@ process.env.NTBA_FIX_319 = 1; // Need for tel fix
 
 const TelegramBot = require("node-telegram-bot-api");
 
+// constants
 const token = process.env.TELEGRAM_API;
 
 class TelegramService {

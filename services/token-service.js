@@ -1,5 +1,9 @@
 const jwt = require("jsonwebtoken");
+
+// models
 const TokenModel = require("/models/Token");
+
+// exceptions
 const ApiError = require("/exceptions/api-error");
 
 class TokenService {

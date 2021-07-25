@@ -1,7 +1,8 @@
 const HTMLParser = require("node-html-parser");
 const needle = require("needle");
+
+// exceptions
 const ApiError = require("/exceptions/api-error");
-fs = require("fs");
 
 class ParserService {
   async parseURL(url) {
@@ -54,7 +55,6 @@ class ParserService {
 
       return textElementsBySelectors;
     } catch (e) {
-      console.log(e);
       throw ApiError.NotFound(` Func: parseByParseTemplate`, e);
     }
   }

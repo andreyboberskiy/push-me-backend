@@ -1,22 +1,17 @@
-const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-const dotenv = require("dotenv");
-dotenv.config();
 
+// exceptions
 const ApiError = require("/exceptions/api-error");
 
+// models
 const UserModel = require("/models/User");
 
+// services
 const TokenService = require("/services/token-service");
 
 class AuthController {
   async signUp(req, res, next) {
     try {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        throw ApiError.BadRequest("Invalid2 Data", errors.array());
-      }
-
       const { email, password } = req.body;
       const candidate = await UserModel.findOne({ email });
 
@@ -39,12 +34,6 @@ class AuthController {
 
   async signIn(req, res, next) {
     try {
-      const errors = validationResult(req);
-
-      if (!errors.isEmpty()) {
-        throw ApiError.BadRequest("Invalid data", errors.array());
-      }
-
       const { email, password } = req.body;
 
       const user = await UserModel.findOne({ email });

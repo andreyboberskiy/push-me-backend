@@ -1,8 +1,10 @@
 const isEqual = require("lodash/isEqual");
 
+// services
 const ParserService = require("/services/parser");
 const TelegramService = require("/services/telegram");
 
+// models
 const NotificationModel = require("/models/Notification");
 
 class NotificationService {

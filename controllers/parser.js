@@ -1,19 +1,18 @@
+// exceptions
 const ApiError = require("/exceptions/api-error");
 
+// services
 const ParseServices = require("/services/parser");
-const { checkRouteValidation } = require("/services/validation-services");
 
-function getElementsByText(str, DOM, tag = "a") {
-  return Array.prototype.slice
-    .call(DOM.getElementsByTagName(tag))
-    .filter((el) => el.textContent.trim() === str.trim());
-}
+// function getElementsByText(str, DOM, tag = "a") {
+//   return Array.prototype.slice
+//     .call(DOM.getElementsByTagName(tag))
+//     .filter((el) => el.textContent.trim() === str.trim());
+// }
 
 class ParserController {
   async byTextQuery(req, res, next) {
     try {
-      checkRouteValidation(req);
-
       const { url, selectorQuery } = req.body;
 
       const DOM = await ParseServices.parseURL(url);
@@ -54,8 +53,6 @@ class ParserController {
 
   async byHTMLSelector(req, res, next) {
     try {
-      checkRouteValidation(req);
-
       //selector = [".class1 .class2"] || ["#id1","#id"] etc
       const { url, selector } = req.body;
 
@@ -79,8 +76,6 @@ class ParserController {
 
   async byHTMLSelectorWithPage(req, res, next) {
     try {
-      checkRouteValidation(req);
-
       //selector = [".class1 .class2"] || ["#id1","#id"] etc
       const { url, secondPageUrl, pageCount, selector } = req.body;
 

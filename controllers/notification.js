@@ -1,10 +1,13 @@
+// models
 const UserModel = require("/models/User");
 const NotificationModel = require("/models/Notification");
 const ParseTemplateModel = require("/models/ParseTemplate");
 
+// services
 const NotificationService = require("/services/notification");
 const TokenService = require("/services/token-service");
 
+//exceptions
 const ApiError = require("/exceptions/api-error");
 
 class NotificationController {

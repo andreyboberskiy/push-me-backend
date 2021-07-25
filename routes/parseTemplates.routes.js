@@ -1,13 +1,16 @@
 const { check } = require("express-validator");
 const { Router } = require("express");
 
+const router = Router();
+
+// middlewares
 const authMiddleware = require("/middlewares/auth.middleware");
 const checkValidMiddleware = require("/middlewares/checkValid.middleware");
-const routesByName = require("/routes/routesByName");
 
-const router = Router();
-module.exports = router;
+// configs
+const routesByName = require("/constants/routesByName");
 
+// controllers
 const Controller = require("/controllers/parseTemplates");
 
 // api/parse-templates/create
@@ -22,6 +25,7 @@ router.post(
   routesByName.parseTemplates.create,
   authMiddleware,
   createValidation,
+  checkValidMiddleware,
   Controller.create
 );
 
@@ -33,6 +37,7 @@ router.post(
   routesByName.parseTemplates.list,
   authMiddleware,
   listValidation,
+  checkValidMiddleware,
   Controller.getList
 );
 
@@ -55,3 +60,4 @@ router.put(
   checkValidMiddleware,
   Controller.turnParse
 );
+module.exports = router;

@@ -1,9 +1,13 @@
 const CronJob = require("cron").CronJob;
+
+// exceptions
 const ApiError = require("/exceptions/api-error");
 
+// models
 const ParseTemplateModel = require("/models/ParseTemplate");
 const UserModel = require("/models/User");
 
+// services
 const NotificationService = require("/services/notification");
 
 class CronService {

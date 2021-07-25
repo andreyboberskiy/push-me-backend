@@ -3,7 +3,7 @@ const { Router } = require("express");
 
 const authMiddleware = require("/middlewares/auth.middleware");
 const checkValidMiddleware = require("/middlewares/checkValid.middleware");
-const routesByName = require("/routes/routesByName");
+const routesByName = require("/constants/routesByName");
 
 const router = Router();
 module.exports = router;
