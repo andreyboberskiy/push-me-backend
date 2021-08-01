@@ -9,6 +9,9 @@ const UserModel = require("/models/User");
 // services
 const TokenService = require("/services/token-service");
 
+//DTO
+const UserDTO = require("/dto/user");
+
 class AuthController {
   async signUp(req, res, next) {
     try {
@@ -41,7 +44,8 @@ class AuthController {
         throw ApiError.BadRequest("User not found");
       }
 
-      const isMatch = bcrypt.compare(password, user.password);
+      const isMatch = await bcrypt.compare(password, user.password);
+
       if (!isMatch) {
         throw ApiError.BadRequest("Password Incorrect");
       }
@@ -53,7 +57,9 @@ class AuthController {
 
       await TokenService.saveToken(user._id, refreshToken);
 
-      return res.status(200).json({ accessToken, refreshToken });
+      return res
+        .status(200)
+        .json({ accessToken, refreshToken, user: UserDTO.getUserData(user) });
     } catch (e) {
       next(e);
     }

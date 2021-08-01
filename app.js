@@ -43,8 +43,8 @@ async function start() {
       useCreateIndex: true,
     });
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-    await CronService.startAll();
-    await TelegramService.listenConnect();
+    // await CronService.startAll();
+    // await TelegramService.listenConnect();
   } catch (e) {
     console.log("Server Error CRASH", e.message);
     process.exit(1);

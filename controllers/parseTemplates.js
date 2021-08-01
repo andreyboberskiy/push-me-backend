@@ -10,14 +10,8 @@ const ApiError = require("/exceptions/api-error");
 class ParseTemplatesController {
   async create(req, res, next) {
     try {
-      const {
-        title,
-        url,
-        selectorsData,
-        userId,
-        parseTime,
-        enabled,
-      } = req.body;
+      const { title, url, selectorsData, userId, parseTime, enabled } =
+        req.body;
 
       const sameTitle = await ParseTemplateModel.findOne({
         user: userId,

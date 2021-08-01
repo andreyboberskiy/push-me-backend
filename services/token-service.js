@@ -9,7 +9,7 @@ const ApiError = require("/exceptions/api-error");
 class TokenService {
   async generateTokens(payload) {
     const accessToken = jwt.sign(payload, process.env.JWT, {
-      expiresIn: "15m",
+      expiresIn: "30d",
     });
     const refreshToken = jwt.sign(payload, process.env.JWT, {
       expiresIn: "30d",
