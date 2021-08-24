@@ -3,49 +3,31 @@ const ApiError = require("/exceptions/api-error");
 
 // services
 const ParseServices = require("/services/parser");
-
-// function getElementsByText(str, DOM, tag = "a") {
-//   return Array.prototype.slice
-//     .call(DOM.getElementsByTagName(tag))
-//     .filter((el) => el.textContent.trim() === str.trim());
-// }
+const DOMService = require("/services/dom");
 
 class ParserController {
   async byTextQuery(req, res, next) {
     try {
-      const { url, selectorQuery } = req.body;
+      const { url, selectorQuery, approvedQueries } = req.body;
 
-      const DOM = await ParseServices.parseURL(url);
+      const DOM = await ParseServices.parseURL(decodeURI(url));
 
-      let finishTag;
-
-      const tagsNameCanContainText = ["a", "span", "p", "div"];
-
-      tagsNameCanContainText.forEach((tagName) => {
-        if (finishTag) return;
-        const parsedTagsFromDom = DOM.querySelectorAll(tagName);
-
-        parsedTagsFromDom.forEach((tag) => {
-          if (finishTag) return;
-          if (tag.textContent.includes(selectorQuery)) {
-            finishTag = tag;
-          }
-        });
-      });
-
-      if (!finishTag) {
+      const node = DOMService.getNodeByText(DOM, selectorQuery);
+      if (!node) {
         throw ApiError.NotFound("Cant find this text, try another");
       }
 
-      const classList = finishTag.classList.value;
+      const selector = DOMService.getNodeSelector(node);
+      if (!selector) {
+        throw ApiError.NotFound("Cant find selector text");
+      }
 
-      const selectorForSame = `.${classList.join(".")}`;
-      const sameTags = DOM.querySelectorAll(selectorForSame);
-      const sameTexts = sameTags.map((item) =>
-        item.textContent.replace(/\s+/g, " ").trim()
-      );
+      const sameNodes = DOM.querySelectorAll(selector);
+      const sameTexts = DOMService.getTextsByNodes(sameNodes);
 
-      return res.status(200).json({ sameTexts, classList });
+      const parent = DOMService.getParentSelector(node, approvedQueries);
+
+      return res.status(200).json({ sameTexts, selector, parent });
     } catch (e) {
       next(e);
     }
@@ -56,7 +38,7 @@ class ParserController {
       //selector = [".class1 .class2"] || ["#id1","#id"] etc
       const { url, selector } = req.body;
 
-      const DOM = await ParseServices.parseURL(url);
+      const DOM = await ParseServices.parseURL(decodeURI(url));
 
       const allParsedElements = DOM.querySelectorAll(selector);
 
@@ -79,7 +61,7 @@ class ParserController {
       //selector = [".class1 .class2"] || ["#id1","#id"] etc
       const { url, secondPageUrl, pageCount, selector } = req.body;
 
-      const stringDiff = secondPageUrl.split(url).join("");
+      const stringDiff = secondPageUrl.split(decodeURI(url)).join("");
 
       if (!stringDiff.length) {
         throw ApiError.BadRequest("Cant find URL differences");

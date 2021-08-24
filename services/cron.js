@@ -20,7 +20,6 @@ class CronService {
     job.start();
   }
   addForNotify(template, user) {
-    console.log({ user });
     const { _id: id, parseTime } = template;
 
     this.add(id, this.getTime(parseTime), () =>

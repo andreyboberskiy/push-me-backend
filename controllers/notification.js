@@ -15,8 +15,6 @@ class NotificationController {
     try {
       const { chatId, userId } = req.body;
 
-      console.log({ chatId });
-
       const user = await UserModel.findByIdAndUpdate(userId, {
         telegramChatId: chatId,
       });

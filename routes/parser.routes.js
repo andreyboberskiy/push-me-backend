@@ -20,18 +20,19 @@ router.post(routesByName.parse.byHTMLSelector, authMiddleware, [
   ParserController.byHTMLSelector,
 ]);
 
-router.post(routesByName.parse.byHTMLSelectorWithPage, authMiddleware, [
-  check("url", "Url is empty").notEmpty(),
-  check("secondPageUrl", "Second page url is empty").notEmpty(),
-  check("selector", "Empty selector query").notEmpty(),
-  check("pageCount", "Page count is empty").notEmpty(),
-  checkValidMiddleware,
-  ParserController.byHTMLSelectorWithPage,
-]);
+// router.post(routesByName.parse.byHTMLSelectorWithPage, authMiddleware, [
+//   check("url", "Url is empty").notEmpty(),
+//   check("secondPageUrl", "Second page url is empty").notEmpty(),
+//   check("selector", "Empty selector query").notEmpty(),
+//   check("pageCount", "Page count is empty").notEmpty(),
+//   checkValidMiddleware,
+//   ParserController.byHTMLSelectorWithPage,
+// ]);
 
 router.post(routesByName.parse.byTextQuery, authMiddleware, [
   check("url", "Url is empty").notEmpty(),
   check("selectorQuery", "Empty selector query").notEmpty(),
+  check("approvedQueries", "Approved Queries is not specified").isArray(),
   checkValidMiddleware,
   ParserController.byTextQuery,
 ]);
