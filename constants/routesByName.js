@@ -10,6 +10,7 @@ const routesByName = {
     index: `${apiPrefix}${authPrefix}`,
     signIn: `/sign-in`,
     signUp: `/sign-up`,
+    refreshToken: `/refresh-token`,
   },
   parse: {
     index: `${apiPrefix}${parsePrefix}`,

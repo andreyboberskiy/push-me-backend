@@ -35,3 +35,11 @@ router.post(
   checkValidMiddleware,
   AuthController.signIn
 );
+
+// api/auth/refresh-token
+router.post(
+  routesByName.auth.refreshToken,
+  [check("refreshToken", "Invalid password").exists().isString()],
+  checkValidMiddleware,
+  AuthController.refreshToken
+);
