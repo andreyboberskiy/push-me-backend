@@ -1,4 +1,4 @@
-const { checkRouteValidation } = require("/services/validation-services");
+const { checkRouteValidation } = require("/services/validation");
 
 module.exports = (req, res, next) => {
   if (req.method === "OPTIONS") {

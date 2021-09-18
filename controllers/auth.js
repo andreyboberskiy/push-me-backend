@@ -1,4 +1,5 @@
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 // exceptions
 const ApiError = require("/exceptions/api-error");
@@ -7,7 +8,7 @@ const ApiError = require("/exceptions/api-error");
 const UserModel = require("/models/User");
 
 // services
-const TokenService = require("/services/token-service");
+const TokenService = require("/services/token");
 
 //DTO
 const UserDTO = require("/dto/user");
@@ -62,6 +63,43 @@ class AuthController {
         .json({ accessToken, refreshToken, user: UserDTO.getUserData(user) });
     } catch (e) {
       next(e);
+    }
+  }
+
+  async refreshToken(req, res, next) {
+    try {
+      const { refreshToken: oldToken } = req.body;
+
+      console.log({ oldToken });
+
+      const { userId, telegramChatId } = jwt.verify(oldToken, process.env.JWT);
+
+      if (!userId) {
+        if (!userId) {
+          throw ApiError.BadRequest("Token not found");
+        }
+      }
+
+      const user = await UserModel.findById(userId);
+
+      if (!user) {
+        throw ApiError.BadRequest("User not found");
+      }
+
+      const { accessToken, refreshToken } = await TokenService.generateTokens({
+        userId,
+        telegramChatId,
+      });
+
+      console.log(accessToken, refreshToken, "new tok", userId, telegramChatId);
+
+      await TokenService.saveToken(userId, refreshToken, oldToken);
+
+      return res
+        .status(200)
+        .json({ accessToken, refreshToken, user: UserDTO.getUserData(user) });
+    } catch (e) {
+      return res.status(401).json({ logout: true });
     }
   }
 }

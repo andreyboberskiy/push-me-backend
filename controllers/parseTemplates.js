@@ -43,7 +43,7 @@ class ParseTemplatesController {
 
   async getList(req, res, next) {
     try {
-      const { offset, userId, sort } = req.body;
+      const { offset = 0, userId, sort } = req.body;
 
       const list = await ParseTemplateModel.find(
         { user: userId },

@@ -5,7 +5,7 @@ const ParseTemplateModel = require("/models/ParseTemplate");
 
 // services
 const NotificationService = require("/services/notification");
-const TokenService = require("/services/token-service");
+const TokenService = require("/services/token");
 
 //exceptions
 const ApiError = require("/exceptions/api-error");

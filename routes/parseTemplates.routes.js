@@ -30,14 +30,14 @@ router.post(
 );
 
 // api/parse-templates/list
-const listValidation = [
-  check("offset", "Offset is required").isNumeric().isInt(),
-];
+// const listValidation = [
+//   check("offset", "Offset is required").isNumeric().isInt(),
+// ];
 router.post(
   routesByName.parseTemplates.list,
   authMiddleware,
-  listValidation,
-  checkValidMiddleware,
+  // listValidation,
+  // checkValidMiddleware,
   Controller.getList
 );
 
