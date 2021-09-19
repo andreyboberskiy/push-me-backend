@@ -1,6 +1,7 @@
 require("sexy-require");
 const express = require("express");
 const mongoose = require("mongoose");
+const autoIncrement = require("mongoose-auto-increment");
 
 // configs
 const dotenv = require("dotenv");
@@ -21,15 +22,15 @@ const app = express();
 app.use(express.json({ extended: true }));
 
 // routes
-app.use(routesByName.auth.index, require("/routes/auth.routes"));
-app.use(routesByName.parse.index, require("/routes/parser.routes"));
+app.use(routesByName.auth.index, require("/routes/auth/auth.routes"));
+app.use(routesByName.parse.index, require("/routes/parser/parser.routes"));
 app.use(
   routesByName.parseTemplates.index,
-  require("/routes/parseTemplates.routes")
+  require("/routes/parseTemplates/parseTemplates.routes")
 );
 app.use(
   routesByName.notifications.index,
-  require("/routes/notifications.routes")
+  require("/routes/notifications/notifications.routes")
 );
 
 // use middlewares
@@ -42,6 +43,8 @@ async function start() {
       useUnifiedTopology: true,
       useCreateIndex: true,
     });
+    mongoose.set("useFindAndModify", false);
+
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
     // await CronService.startAll();
     // await TelegramService.listenConnect();

@@ -22,7 +22,7 @@ class Token {
       return await tokenData.save();
     }
 
-    const token = TokenModel.create({ user: userId, refreshToken });
+    const token = TokenModel.create({ userId, refreshToken });
 
     return { token };
   }

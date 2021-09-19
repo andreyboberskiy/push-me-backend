@@ -13,18 +13,15 @@ const routesByName = require("/constants/routesByName");
 // controllers
 const Controller = require("/controllers/parseTemplates");
 
+// validation
+
+const validation = require("./validate");
+
 // api/parse-templates/create
-const createValidation = [
-  check("title", "Title is required").isString().notEmpty(),
-  check("url", "Invalid URL").isString().isURL().notEmpty(),
-  check("selectorsData", "Selectors Data is empty").isObject().notEmpty(),
-  check("selectorsData.parent", "Parent is empty").isString().notEmpty(),
-  check("selectorsData.selectors", "Selectors is empty").isArray().notEmpty(),
-];
 router.post(
   routesByName.parseTemplates.create,
   authMiddleware,
-  createValidation,
+  validation.create,
   checkValidMiddleware,
   Controller.create
 );

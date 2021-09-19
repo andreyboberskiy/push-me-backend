@@ -18,7 +18,7 @@ class NotificationService {
     }
 
     const newNotification = await NotificationModel.create({
-      template: template.id,
+      templateId: template.id,
       parsedList: list,
     });
     await newNotification.save();

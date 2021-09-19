@@ -10,6 +10,10 @@ const UserModel = require("/models/User");
 // services
 const NotificationService = require("/services/notification");
 
+// DTO
+
+const templateDTO = require("/dto/parseTemplate");
+
 class CronService {
   constructor() {
     this._jobs = {};
@@ -20,8 +24,7 @@ class CronService {
     job.start();
   }
   addForNotify(template, user) {
-    const { _id: id, parseTime } = template;
-
+    const { id, parseTime } = template;
     this.add(id, this.getTime(parseTime), () =>
       NotificationService.checkUpdates(template, {
         telegramChatId: user.telegramChatId,
@@ -67,7 +70,7 @@ class CronService {
       for (let i = 0; i < templates.length; i++) {
         const user = await UserModel.findById(templates[i].user);
         if (user) {
-          this.addForNotify(templates[i], user);
+          this.addForNotify(templateDTO.getTemplateAllData(templates[i]), user);
         }
       }
 

@@ -1,15 +1,13 @@
 const { Schema, model } = require("mongoose");
+const autoIncrement = require("mongoose-auto-increment");
 
 const NotificationSchema = new Schema({
-  template: { type: Schema.Types.ObjectId, ref: "ParseTemplate" },
+  templateId: { type: Number, ref: "ParseTemplate" },
   count: { type: Number, default: 0 },
   dateCreated: { type: Date, default: Date.now },
   parsedList: { type: Array, required: true },
 });
 
-module.exports = model("Notification", NotificationSchema);
+NotificationSchema.plugin(autoIncrement.plugin, "Notification");
 
-NotificationSchema.pre("save", function (next) {
-  this.count.increment();
-  return next();
-});
+module.exports = model("Notification", NotificationSchema);

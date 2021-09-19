@@ -7,6 +7,9 @@ const CronService = require("/services/cron");
 // exceptions
 const ApiError = require("/exceptions/api-error");
 
+// DTO
+const parseTemplateDTO = require("/dto/parseTemplate");
+
 class ParseTemplatesController {
   async create(req, res, next) {
     try {
@@ -28,7 +31,7 @@ class ParseTemplatesController {
         title,
         url,
         selectorsData,
-        user: userId,
+        userId,
         parseTime,
         enabled,
       });
@@ -46,7 +49,7 @@ class ParseTemplatesController {
       const { offset = 0, userId, sort } = req.body;
 
       const list = await ParseTemplateModel.find(
-        { user: userId },
+        { userId },
         [
           "title",
           "selectorsData",
@@ -62,7 +65,9 @@ class ParseTemplatesController {
         }
       );
 
-      return res.status(201).json({ success: true, list });
+      const listWithDTO = parseTemplateDTO.getTemplateAllDataByList(list);
+
+      return res.status(200).json({ success: true, list: listWithDTO });
     } catch (e) {
       next(e);
     }

@@ -29,13 +29,20 @@ class ParserService {
 
       const DOM = await this.parseURL(url);
 
-      const allParsedElements = DOM.querySelectorAll(selectorsData.parent);
+      if (!DOM) {
+        throw ApiError.NotFound(
+          `Cant found by this selector: ${selectorsData.parent}. Func: parseByParseTemplate`
+        );
+      }
+
+      const allParsedElements = DOM?.querySelectorAll(selectorsData.parent);
 
       if (!allParsedElements.length) {
         throw ApiError.NotFound(
           `Cant found by this selector: ${selectorsData.parent}. Func: parseByParseTemplate`
         );
       }
+      console.log("KEK2");
 
       const parent =
         selectorsData.getFrom === -1
