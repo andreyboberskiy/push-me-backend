@@ -33,7 +33,7 @@ class NotificationService {
 
     const lastNotify = await NotificationModel.find(
       {
-        template: template.id,
+        templateId: template.id,
       },
       "",
       { sort: { dateCreated: -1 }, limit: 1 }

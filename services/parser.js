@@ -42,7 +42,6 @@ class ParserService {
           `Cant found by this selector: ${selectorsData.parent}. Func: parseByParseTemplate`
         );
       }
-      console.log("KEK2");
 
       const parent =
         selectorsData.getFrom === -1

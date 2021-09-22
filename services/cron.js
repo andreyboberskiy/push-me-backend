@@ -68,7 +68,7 @@ class CronService {
     try {
       const templates = await ParseTemplateModel.find({ enabled: true });
       for (let i = 0; i < templates.length; i++) {
-        const user = await UserModel.findById(templates[i].user);
+        const user = await UserModel.findById(templates[i].userId);
         if (user) {
           this.addForNotify(templateDTO.getTemplateAllData(templates[i]), user);
         }

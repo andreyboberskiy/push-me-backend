@@ -12,6 +12,7 @@ const routesByName = require("/constants/routesByName");
 
 // middlewares
 const errorsMiddleware = require("/middlewares/error.middleware");
+const requestLimitMiddleware = require("/middlewares/requestLimit");
 
 // services
 const CronService = require("/services/cron");
@@ -21,6 +22,7 @@ const app = express();
 
 app.use(express.json({ extended: true }));
 
+app.use(requestLimitMiddleware);
 // routes
 app.use(routesByName.auth.index, require("/routes/auth/auth.routes"));
 app.use(routesByName.parse.index, require("/routes/parser/parser.routes"));

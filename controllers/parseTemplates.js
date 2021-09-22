@@ -17,7 +17,7 @@ class ParseTemplatesController {
         req.body;
 
       const sameTitle = await ParseTemplateModel.findOne({
-        user: userId,
+        userId,
         title,
       });
 
@@ -77,17 +77,14 @@ class ParseTemplatesController {
     try {
       const { id, enabled, parseTime } = req.body;
 
-      const parseTemplate = await ParseTemplateModel.findOne({ _id: id });
+      const parseTemplate = await ParseTemplateModel.findById(id);
 
       if (!parseTemplate) {
         throw ApiError.BadRequest("Cant find template with this id");
       }
 
       if (enabled && !parseTemplate.enabled) {
-        console.log("must start");
-        CronService.add(id, CronService.getTime(parseTime), () => {
-          console.log("cron func");
-        });
+        CronService.add(id, CronService.getTime(parseTime), () => {});
       }
       if (!enabled && parseTemplate.enabled) {
         CronService.stop(id);

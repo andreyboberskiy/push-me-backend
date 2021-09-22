@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT);
-
+    console.log(req);
     req.body.userId = decoded.userId;
     req.body.telegramChatId = decoded.telegramChatId;
 

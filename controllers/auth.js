@@ -70,14 +70,10 @@ class AuthController {
     try {
       const { refreshToken: oldToken } = req.body;
 
-      console.log({ oldToken });
-
       const { userId, telegramChatId } = jwt.verify(oldToken, process.env.JWT);
 
       if (!userId) {
-        if (!userId) {
-          throw ApiError.BadRequest("Token not found");
-        }
+        throw ApiError.BadRequest("Token not found");
       }
 
       const user = await UserModel.findById(userId);
@@ -90,8 +86,6 @@ class AuthController {
         userId,
         telegramChatId,
       });
-
-      console.log(accessToken, refreshToken, "new tok", userId, telegramChatId);
 
       await TokenService.saveToken(userId, refreshToken, oldToken);
 

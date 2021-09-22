@@ -56,7 +56,7 @@ class NotificationController {
     try {
       const { id, telegramChatId } = req.body;
 
-      const template = await ParseTemplateModel.findOne({ _id: id });
+      const template = await ParseTemplateModel.findById(id);
 
       if (!template) {
         throw ApiError.NotFound("Template is not found");
