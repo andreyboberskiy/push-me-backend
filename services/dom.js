@@ -75,6 +75,14 @@ class DomService {
     return nodes.map((item) => item.textContent.replace(/\s+/g, " ").trim());
   }
 
+  getTextByNode(node) {
+    return node.textContent.replace(/\s+/g, " ").trim();
+  }
+
+  getSelectorByNode(node) {
+    return this.transformClassesToSelector(node.classList.value);
+  }
+
   getNodeSelector(node, tryCount = 10) {
     if (!node?.classList?.value || tryCount === 0) return null;
 

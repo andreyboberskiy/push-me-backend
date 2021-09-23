@@ -38,7 +38,9 @@ class ParseTemplatesController {
 
       await parseTemplate.save();
 
-      return res.status(201).json({ success: true });
+      const template = parseTemplateDTO.getTemplateAllData(parseTemplate);
+
+      return res.status(201).json({ success: true, template });
     } catch (e) {
       next(e);
     }

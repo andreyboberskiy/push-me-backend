@@ -1,4 +1,7 @@
 const { check } = require("express-validator");
+const { forEach } = require("lodash");
+
+const { checkMaxLength, checkMinLength } = require("/services/validation");
 
 function parseTimeCustomValidation(value) {
   let specified = false;
@@ -9,6 +12,24 @@ function parseTimeCustomValidation(value) {
   });
   return specified;
 }
+
+function selectorsCustomValidation(selectorsData) {
+  let valid = true;
+
+  forEach(selectorsData, (selectorsData) => {
+    const { title, selector } = selectorsData;
+    if (
+      !checkMaxLength(title, 255) ||
+      !checkMinLength(title, 0) ||
+      !checkMaxLength(selector, 1000) ||
+      !checkMinLength(selector, 1)
+    ) {
+      valid = false;
+    }
+  });
+  return valid;
+}
+
 const validate = {
   create: [
     check(
@@ -24,6 +45,9 @@ const validate = {
       parseTimeCustomValidation
     ),
     check("selectorsData.selectors", "Field must be an array").isArray(),
+    check("selectorsData.selectors", "Invalid selectors").custom(
+      selectorsCustomValidation
+    ),
   ],
 };
 

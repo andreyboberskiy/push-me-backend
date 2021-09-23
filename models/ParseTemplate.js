@@ -14,7 +14,8 @@ const ParseTemplateSchema = new Schema({
     selectors: [
       {
         title: { type: String, required: true },
-        value: { type: String, required: true },
+        selector: { type: String, required: true },
+        excludedSelectors: { type: Array, required: false },
       },
     ],
   },

@@ -4,6 +4,7 @@ const ApiError = require("/exceptions/api-error");
 // services
 const ParseServices = require("/services/parser");
 const DOMService = require("/services/dom");
+const { map } = require("lodash");
 
 class ParserController {
   async byTextQuery(req, res, next) {
@@ -23,11 +24,17 @@ class ParserController {
       }
 
       const sameNodes = DOM.querySelectorAll(selector);
-      const sameTexts = DOMService.getTextsByNodes(sameNodes);
+
+      const sameInfo = map(sameNodes, (node, index) => {
+        const text = DOMService.getTextByNode(node);
+        const selector = DOMService.getSelectorByNode(node);
+
+        return { text, selector, id: index + 1 };
+      });
 
       const parent = DOMService.getParentSelector(node, approvedQueries);
 
-      return res.status(200).json({ sameTexts, selector, parent });
+      return res.status(200).json({ sameInfo, selector, parent });
     } catch (e) {
       next(e);
     }
