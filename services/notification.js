@@ -28,6 +28,15 @@ class NotificationService {
   async compareParsedValues(newList, prevList) {
     return isEqual(newList, prevList);
   }
+
+  async getLastNotification(templateId) {
+    const notify = await NotificationModel.findById(templateId, "", {
+      sort: { dateCreated: -1 },
+      limit: 1,
+    });
+
+    return notify;
+  }
 }
 
 module.exports = new NotificationService();

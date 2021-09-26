@@ -1,23 +1,33 @@
 // models
-const ParseTemplateModel = require("/models/Template");
+const TemplateModel = require("/models/Template");
 const NotificationModel = require("/models/Notification");
 
 // services
 const ParserService = require("/services/parser");
 const NotificationService = require("/services/notification");
 
+// exceptions
+const ApiError = require("/exceptions/api-error");
+
 class TemplateService {
+  async getTemplateById(id) {
+    const template = await TemplateModel.findById(id);
+
+    if (!template) {
+      throw ApiError.NotFound(`Cant find template by this id ${id}`);
+    }
+    return template;
+  }
   async checkUpdates(templateId) {
-    const template = await ParseTemplateModel.findById(templateId);
+    const template = await this.getTemplateById(templateId);
 
     const parsedList = await ParserService.parseTemplate(template);
 
     return false;
 
-    const lastNotify = await NotificationModel.findById(templateId, "", {
-      sort: { dateCreated: -1 },
-      limit: 1,
-    });
+    const lastNotify = await NotificationService.getLastNotification(
+      templateId
+    );
 
     if (!lastNotify.length) {
       await NotificationService.pushNotify(

@@ -1,8 +1,12 @@
 const HTMLParser = require("node-html-parser");
 const needle = require("needle");
+const { forEach, map } = require("lodash");
 
 // exceptions
 const ApiError = require("/exceptions/api-error");
+
+// services
+const DOMService = require("/services/dom");
 
 class ParserService {
   async getDOM(url) {
@@ -31,30 +35,50 @@ class ParserService {
 
       const DOM = await this.getDOM(url);
 
-      const allParsedElements = DOM.querySelectorAll(selectorsData.parent);
+      const allParentNodes = DOM.querySelectorAll(selectorsData.parent);
 
-      if (!allParsedElements.length) {
+      if (!allParentNodes.length) {
         throw ApiError.NotFound(
           `Could not find elements by this parent selector: ${selectorsData.parent}`
         );
       }
 
-      // Take newest item
-      const parent = allParsedElements[0];
-      console.log({ parent, allParsedElements, selectorsData, url });
+      // remove excludes selectors
+      const filteredParents = [];
+      const excludedSelectors = [];
 
-      const textElementsBySelectors = selectorsData.selectors.map(
+      forEach(selectorsData.selectors, (item) => {
+        forEach(item.excludedSelectors, (sel) => excludedSelectors.push(sel));
+      });
+
+      forEach(allParentNodes, (node) => {
+        let hasExcludedNode = false;
+        forEach(excludedSelectors, (excludedSelector) => {
+          if (node.querySelector(excludedSelector)) {
+            hasExcludedNode = true;
+          }
+        });
+        if (!hasExcludedNode) {
+          filteredParents.push(node);
+        }
+      });
+
+      // Take newest item
+      const parent = filteredParents[0];
+
+      const templateNewestValues = map(
+        selectorsData.selectors,
         ({ selector, title }) => {
-          const parsedText =
-            parent
-              .querySelector(selector)
-              ?.textContent.replace(/\s+/g, " ")
-              .trim() || false;
-          return { title, value: parsedText };
+          const node = parent.querySelector(selector);
+          const text = DOMService.getTextByNode(node);
+
+          return { title, text };
         }
       );
 
-      return textElementsBySelectors;
+      console.log({ templateNewestValues });
+
+      return templateNewestValues;
     } catch (e) {
       throw ApiError.NotFound(`Error. Func: parseByParseTemplate`, e);
     }
