@@ -1,5 +1,5 @@
 // models
-const ParseTemplateModel = require("/models/ParseTemplate");
+const ParseTemplateModel = require("/models/Template");
 
 // services
 const CronService = require("/services/cron");
@@ -10,7 +10,7 @@ const ApiError = require("/exceptions/api-error");
 // DTO
 const parseTemplateDTO = require("/dto/parseTemplate");
 
-class ParseTemplatesController {
+class TemplateController {
   async create(req, res, next) {
     try {
       const { title, url, selectorsData, userId, parseTime, enabled } =
@@ -75,7 +75,7 @@ class ParseTemplatesController {
     }
   }
 
-  async turnParse(req, res, next) {
+  async turnEnabled(req, res, next) {
     try {
       const { id, enabled, parseTime } = req.body;
 
@@ -107,4 +107,4 @@ class ParseTemplatesController {
   }
 }
 
-module.exports = new ParseTemplatesController();
+module.exports = new TemplateController();

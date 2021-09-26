@@ -1,56 +1,68 @@
 const map = require("lodash/map");
+const { filter, forEach } = require("lodash");
 
 class DomService {
   tagsForSearch = ["a", "span", "p", "div"];
 
-  getParentSelector(node, sameQueries) {
+  getParentSelector({ node, selector, currentNodeText, tryCount = 0 }) {
     let parentClasses = null;
-
-    if (!node) return null;
+    if (!node || tryCount > 10) return null;
     if (!node.parentNode) {
       parentClasses = node.classList.value;
     }
 
-    if (node.parentNode.classList.length > 0 && sameQueries.length === 0) {
-      parentClasses = node.parentNode.classList.value;
-    } else {
-      parentClasses = this.getParentRecursion(node.parentNode, sameQueries, 10);
+    if (parentClasses) {
+      return this.transformClassesToSelector(parentClasses);
+    }
+    let sameNodeText = null;
+
+    const suspectParentNode = node.parentNode;
+
+    const suspectParentNodeSelector =
+      this.getNodeClassesSelector(suspectParentNode);
+
+    let suspectParentNodeNeighbors = [];
+
+    if (suspectParentNodeSelector) {
+      suspectParentNodeNeighbors =
+        suspectParentNode?.parentNode?.querySelectorAll(
+          suspectParentNodeSelector
+        );
     }
 
-    return parentClasses?.length > 0
-      ? this.transformClassesToSelector(parentClasses)
-      : null;
-  }
+    forEach(suspectParentNodeNeighbors, (node) => {
+      if (sameNodeText) return;
 
-  getParentRecursion(tag, sameQueries, findParentTry = 0) {
-    if (findParentTry === 0) {
-      return null;
-    }
-    if (!tag) return null;
+      if (node && node["querySelector"]) {
+        const sameNode = node.querySelector(selector);
 
-    const firstParent = tag.parentNode;
-    if (!firstParent) return tag.classList.value;
+        const suspectSameNodeText = this.getTextByNode(sameNode);
+        if (sameNode && !suspectSameNodeText.includes(currentNodeText)) {
+          sameNodeText = suspectSameNodeText;
+        }
+      }
+    });
 
-    const sameNodesFounded = map(sameQueries, (query) =>
-      this.getNodeByText(firstParent, query)
-    );
-
-    const isCommonParent = !sameNodesFounded.some((node) => !node);
-
-    if (firstParent.classList.value.length > 0 && isCommonParent) {
-      return firstParent.classList.value;
+    if (sameNodeText) {
+      return this.getNodeClassesSelector(suspectParentNode);
     } else {
-      return this.getParentRecursion(
-        firstParent,
-        sameQueries,
-        findParentTry - 1
-      );
+      return this.getParentSelector({
+        node: suspectParentNode,
+        selector,
+        currentNodeText,
+        tryCount: tryCount + 1,
+      });
     }
   }
 
   transformClassesToSelector(classList) {
     if (!classList?.length) return null;
-    return `.${classList.join(".")}`;
+
+    const validClassList = filter(
+      classList,
+      (className) => className.length > 0
+    );
+    return `.${validClassList.join(".")}`;
   }
 
   getNodeByText(nodeForSearch, searchText) {
@@ -79,18 +91,19 @@ class DomService {
     return node.textContent.replace(/\s+/g, " ").trim();
   }
 
-  getSelectorByNode(node) {
-    return this.transformClassesToSelector(node.classList.value);
-  }
-
-  getNodeSelector(node, tryCount = 10) {
+  getNodeClassesSelectorUpper(node, tryCount = 10) {
     if (!node?.classList?.value || tryCount === 0) return null;
 
     if (node.classList?.value?.length > 0) {
       return this.transformClassesToSelector(node.classList.value);
     } else {
-      return this.getNodeSelector(node.parentNode, tryCount - 1);
+      return this.getNodeClassesSelectorUpper(node.parentNode, tryCount - 1);
     }
+  }
+
+  getNodeClassesSelector(node) {
+    if (!node?.classList?.value) return null;
+    return this.transformClassesToSelector(node.classList.value);
   }
 }
 

@@ -1,7 +1,7 @@
 // models
 const UserModel = require("/models/User");
 const NotificationModel = require("/models/Notification");
-const ParseTemplateModel = require("/models/ParseTemplate");
+const ParseTemplateModel = require("/models/Template");
 
 // services
 const NotificationService = require("/services/notification");

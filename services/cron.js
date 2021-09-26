@@ -4,7 +4,7 @@ const CronJob = require("cron").CronJob;
 const ApiError = require("/exceptions/api-error");
 
 // models
-const ParseTemplateModel = require("/models/ParseTemplate");
+const ParseTemplateModel = require("/models/Template");
 const UserModel = require("/models/User");
 
 // services

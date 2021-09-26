@@ -5,7 +5,7 @@ const needle = require("needle");
 const ApiError = require("/exceptions/api-error");
 
 class ParserService {
-  async parseURL(url) {
+  async getDOM(url) {
     try {
       const encodedURI = encodeURI(url);
       const res = await needle("get", encodedURI, { compressed: true });
@@ -16,105 +16,100 @@ class ParserService {
         },
       });
 
+      if (!DOM) {
+        throw ApiError.NotFound(`Cant parse this url: ${url}`);
+      }
+
       return DOM;
     } catch (e) {
-      throw ApiError.BadRequest("Cant parse this url", [e]);
+      throw ApiError.NotFound("Cant parse this url", [e]);
     }
   }
-  async parseByParseTemplate(template) {
+  async parseTemplate(template) {
     try {
       const { url, selectorsData } = template;
 
-      selectorsData.getFrom = 1;
+      const DOM = await this.getDOM(url);
 
-      const DOM = await this.parseURL(url);
-
-      if (!DOM) {
-        throw ApiError.NotFound(
-          `Cant found by this selector: ${selectorsData.parent}. Func: parseByParseTemplate`
-        );
-      }
-
-      const allParsedElements = DOM?.querySelectorAll(selectorsData.parent);
+      const allParsedElements = DOM.querySelectorAll(selectorsData.parent);
 
       if (!allParsedElements.length) {
         throw ApiError.NotFound(
-          `Cant found by this selector: ${selectorsData.parent}. Func: parseByParseTemplate`
+          `Could not find elements by this parent selector: ${selectorsData.parent}`
         );
       }
 
-      const parent =
-        selectorsData.getFrom === -1
-          ? allParsedElements[allParsedElements.length - 1]
-          : allParsedElements[selectorsData.getFrom - 1];
+      // Take newest item
+      const parent = allParsedElements[0];
+      console.log({ parent, allParsedElements, selectorsData, url });
 
       const textElementsBySelectors = selectorsData.selectors.map(
-        (selector) => {
+        ({ selector, title }) => {
           const parsedText =
             parent
-              .querySelector(selector.value)
+              .querySelector(selector)
               ?.textContent.replace(/\s+/g, " ")
               .trim() || false;
-          return { title: selector.title, value: parsedText };
+          return { title, value: parsedText };
         }
       );
 
       return textElementsBySelectors;
     } catch (e) {
-      throw ApiError.NotFound(` Func: parseByParseTemplate`, e);
+      throw ApiError.NotFound(`Error. Func: parseByParseTemplate`, e);
     }
   }
 
-  parseLastItemsWithWrapper(parseUrl, selectorsData) {
-    return new Promise((resolve, reject) => {
-      try {
-        needle.get(parseUrl, { compressed: true }, function (err, res) {
-          if (err) {
-            reject(err);
-          }
-          const parsedInfo = [];
-
-          const DOM = HTMLParser.parse(res.body, {
-            blockTextElements: {
-              pre: true,
-            },
-          });
-
-          // fs.writeFile("./parseResult.txt", res.body, function (err, data) {});
-
-          const { wrapper, selectorsWithLabel } = selectorsData;
-
-          const wrappers = DOM.querySelectorAll(wrapper);
-
-          if (!wrappers.length) {
-            reject("Cant find any wrapper. Try another selector");
-          }
-
-          wrappers.forEach((wrapper) => {
-            let preparedInfo = {};
-
-            selectorsWithLabel.forEach(({ label, selector }) => {
-              const selectorDOM = wrapper.querySelector(selector);
-
-              if (selectorDOM) {
-                preparedInfo = {
-                  ...preparedInfo,
-                  [label]:
-                    selectorDOM.rawText.replace(/\s+/g, " ").trim() ||
-                    "Not found",
-                };
-              }
-            });
-            parsedInfo.push(preparedInfo);
-          });
-
-          resolve({ parsedInfo, lengthOfW: wrappers.length });
-        });
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
+  // parseLastItemsWithWrapper(parseUrl, selectorsData) {
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       needle.get(parseUrl, { compressed: true }, function (err, res) {
+  //         if (err) {
+  //           reject(err);
+  //         }
+  //         const parsedInfo = [];
+  //
+  //         const DOM = HTMLParser.parse(res.body, {
+  //           blockTextElements: {
+  //             pre: true,
+  //           },
+  //         });
+  //
+  //         // fs.writeFile("./parseResult.txt", res.body, function (err, data) {});
+  //
+  //         const { wrapper, selectorsWithLabel } = selectorsData;
+  //
+  //         const wrappers = DOM.querySelectorAll(wrapper);
+  //
+  //         if (!wrappers.length) {
+  //           reject("Cant find any wrapper. Try another selector");
+  //         }
+  //
+  //         wrappers.forEach((wrapper) => {
+  //           let preparedInfo = {};
+  //
+  //           selectorsWithLabel.forEach(({ label, selector }) => {
+  //             const selectorDOM = wrapper.querySelector(selector);
+  //
+  //             if (selectorDOM) {
+  //               preparedInfo = {
+  //                 ...preparedInfo,
+  //                 [label]:
+  //                   selectorDOM.rawText.replace(/\s+/g, " ").trim() ||
+  //                   "Not found",
+  //               };
+  //             }
+  //           });
+  //           parsedInfo.push(preparedInfo);
+  //         });
+  //
+  //         resolve({ parsedInfo, lengthOfW: wrappers.length });
+  //       });
+  //     } catch (e) {
+  //       reject(e);
+  //     }
+  //   });
+  // }
 }
 
 module.exports = new ParserService();

@@ -35,6 +35,9 @@ app.use(
   require("/routes/notifications/notifications.routes")
 );
 
+// /routes-for-test
+app.use("/api/routes-for-test", require("/routes/test"));
+
 // use middlewares
 app.use(errorsMiddleware);
 

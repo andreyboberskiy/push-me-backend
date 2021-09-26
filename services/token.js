@@ -6,7 +6,7 @@ const TokenModel = require("/models/Token");
 class Token {
   async generateTokens(payload) {
     const accessToken = jwt.sign(payload, process.env.JWT, {
-      expiresIn: "15m",
+      expiresIn: "15s",
     });
     const refreshToken = jwt.sign(payload, process.env.JWT, {
       expiresIn: "30d",
@@ -18,7 +18,7 @@ class Token {
   async saveToken(userId, refreshToken, oldToken = null) {
     const tokenData = await TokenModel.findOne({ userId });
     if (tokenData && oldToken && tokenData.refreshToken === oldToken) {
-      tokenData.refreshToken = refreshToken;
+      tokenData.overwrite({ refreshToken });
       return await tokenData.save();
     }
 

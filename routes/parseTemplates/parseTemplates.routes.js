@@ -11,7 +11,7 @@ const checkValidMiddleware = require("/middlewares/checkValid.middleware");
 const routesByName = require("/constants/routesByName");
 
 // controllers
-const Controller = require("/controllers/parseTemplates");
+const Controller = require("/controllers/template");
 
 // validation
 
@@ -55,6 +55,6 @@ router.put(
   authMiddleware,
   turnParseValidation,
   checkValidMiddleware,
-  Controller.turnParse
+  Controller.turnEnabled
 );
 module.exports = router;

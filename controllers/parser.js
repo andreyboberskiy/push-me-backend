@@ -11,30 +11,37 @@ class ParserController {
     try {
       const { url, selectorQuery, approvedQueries } = req.body;
 
-      const DOM = await ParseServices.parseURL(decodeURI(url));
+      const DOM = await ParseServices.getDOM(decodeURI(url));
 
-      const node = DOMService.getNodeByText(DOM, selectorQuery);
-      if (!node) {
+      const nodeWithText = DOMService.getNodeByText(DOM, selectorQuery);
+      if (!nodeWithText) {
         throw ApiError.NotFound("Cant find this text, try another");
       }
 
-      const selector = DOMService.getNodeSelector(node);
-      if (!selector) {
+      const selectorWithText =
+        DOMService.getNodeClassesSelectorUpper(nodeWithText);
+      if (!selectorWithText) {
         throw ApiError.NotFound("Cant find selector text");
       }
 
-      const sameNodes = DOM.querySelectorAll(selector);
+      const sameNodes = DOM.querySelectorAll(selectorWithText);
 
       const sameInfo = map(sameNodes, (node, index) => {
         const text = DOMService.getTextByNode(node);
-        const selector = DOMService.getSelectorByNode(node);
+        const selector = DOMService.getNodeClassesSelector(node);
 
         return { text, selector, id: index + 1 };
       });
 
-      const parent = DOMService.getParentSelector(node, approvedQueries);
+      const parent = DOMService.getParentSelector({
+        node: nodeWithText,
+        currentNodeText: selectorQuery,
+        selector: selectorWithText,
+      });
 
-      return res.status(200).json({ sameInfo, selector, parent });
+      return res
+        .status(200)
+        .json({ sameInfo, selector: selectorWithText, parent });
     } catch (e) {
       next(e);
     }
@@ -45,7 +52,7 @@ class ParserController {
       //selector = [".class1 .class2"] || ["#id1","#id"] etc
       const { url, selector } = req.body;
 
-      const DOM = await ParseServices.parseURL(decodeURI(url));
+      const DOM = await ParseServices.getDOM(decodeURI(url));
 
       const allParsedElements = DOM.querySelectorAll(selector);
 

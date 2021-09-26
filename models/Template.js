@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 const autoIncrement = require("mongoose-auto-increment");
 const mongoose = require("mongoose");
 
-const ParseTemplateSchema = new Schema({
+const TemplateSchema = new Schema({
   userId: { type: Number, ref: "User" },
   title: { type: String, required: true },
   enabled: { type: Boolean, required: true, default: false },
@@ -22,6 +22,6 @@ const ParseTemplateSchema = new Schema({
 });
 
 autoIncrement.initialize(mongoose.connection);
-ParseTemplateSchema.plugin(autoIncrement.plugin, "ParseTemplate");
+TemplateSchema.plugin(autoIncrement.plugin, "Template");
 
-module.exports = model("ParseTemplate", ParseTemplateSchema);
+module.exports = model("Template", TemplateSchema);
