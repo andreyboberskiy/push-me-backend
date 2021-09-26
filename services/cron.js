@@ -4,7 +4,7 @@ const CronJob = require("cron").CronJob;
 const ApiError = require("/exceptions/api-error");
 
 // models
-const ParseTemplateModel = require("/models/Template");
+const TemplateModel = require("/models/Template");
 const UserModel = require("/models/User");
 
 // services
@@ -12,7 +12,7 @@ const NotificationService = require("/services/notification");
 
 // DTO
 
-const templateDTO = require("/dto/parseTemplate");
+const templateDTO = require("/dto/template");
 
 class CronService {
   constructor() {
@@ -66,7 +66,7 @@ class CronService {
   }
   async startAll() {
     try {
-      const templates = await ParseTemplateModel.find({ enabled: true });
+      const templates = await TemplateModel.find({ enabled: true });
       for (let i = 0; i < templates.length; i++) {
         const user = await UserModel.findById(templates[i].userId);
         if (user) {

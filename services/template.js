@@ -1,6 +1,5 @@
 // models
 const TemplateModel = require("/models/Template");
-const NotificationModel = require("/models/Notification");
 
 // services
 const ParserService = require("/services/parser");
@@ -10,6 +9,14 @@ const NotificationService = require("/services/notification");
 const ApiError = require("/exceptions/api-error");
 
 class TemplateService {
+  async create(dataForModel) {
+    const subscribers = [dataForModel.userId];
+    const template = await new TemplateModel({ ...dataForModel, subscribers });
+
+    await template.save();
+
+    return template;
+  }
   async getTemplateById(id) {
     const template = await TemplateModel.findById(id);
 
@@ -20,41 +27,31 @@ class TemplateService {
   }
   async checkUpdates(templateId) {
     const template = await this.getTemplateById(templateId);
+    const newestValues = await ParserService.parseTemplate(template);
 
-    const parsedList = await ParserService.parseTemplate(template);
+    const lastNotification =
+      await NotificationService.getLastTemplateNotification(templateId);
 
-    return false;
-
-    const lastNotify = await NotificationService.getLastNotification(
-      templateId
-    );
-
-    if (!lastNotify.length) {
-      await NotificationService.pushNotify(
-        template,
-        parsedList,
-        telegramChatId
-      );
-      return false;
+    if (!lastNotification) {
+      await NotificationService.pushNotificationTemplate(template, {
+        selectorsValues: newestValues,
+      });
+      return;
     }
 
-    const isOldValues = await this.compareParsedValues(
-      parsedList,
-      lastNotify[0].parsedList
+    const notChanged = await NotificationService.compareSelectorsValuesOnEqual(
+      lastNotification.selectorsValues,
+      newestValues
     );
 
-    console.log("telegramChatId", telegramChatId);
-
-    if (!isOldValues) {
-      await NotificationService.pushNotify(
-        template,
-        parsedList,
-        telegramChatId
-      );
-      return parsedList;
+    if (!notChanged) {
+      await NotificationService.pushNotificationTemplate(template, {
+        selectorsValues: newestValues,
+      });
+      return;
     }
 
-    return false;
+    return;
   }
 }
 

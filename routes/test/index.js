@@ -4,9 +4,9 @@ const router = Router();
 
 const TemplateService = require("/services/template");
 
-const checkTemplateWithId0 = (req, res, next) => {
+const checkTemplateWithId1 = (req, res, next) => {
   try {
-    const data = TemplateService.checkUpdates(0);
+    const data = TemplateService.checkUpdates(1);
 
     return res.status(200).json({ data });
   } catch (e) {
@@ -15,5 +15,5 @@ const checkTemplateWithId0 = (req, res, next) => {
   }
 };
 
-router.post("/check-template-updates", checkTemplateWithId0);
+router.post("/check-template-updates", checkTemplateWithId1);
 module.exports = router;

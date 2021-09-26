@@ -1,14 +1,15 @@
 // models
-const ParseTemplateModel = require("/models/Template");
+const TemplateModel = require("/models/Template");
 
 // services
 const CronService = require("/services/cron");
+const TemplateService = require("/services/template");
 
 // exceptions
 const ApiError = require("/exceptions/api-error");
 
 // DTO
-const parseTemplateDTO = require("/dto/parseTemplate");
+const TemplateDTO = require("/dto/template");
 
 class TemplateController {
   async create(req, res, next) {
@@ -16,7 +17,7 @@ class TemplateController {
       const { title, url, selectorsData, userId, parseTime, enabled } =
         req.body;
 
-      const sameTitle = await ParseTemplateModel.findOne({
+      const sameTitle = await TemplateModel.findOne({
         userId,
         title,
       });
@@ -27,20 +28,20 @@ class TemplateController {
         ]);
       }
 
-      const parseTemplate = await new ParseTemplateModel({
+      const templateData = {
         title,
         url,
         selectorsData,
         userId,
         parseTime,
         enabled,
-      });
+      };
 
-      await parseTemplate.save();
+      const template = await TemplateService.create(templateData);
 
-      const template = parseTemplateDTO.getTemplateAllData(parseTemplate);
+      const templateDTO = TemplateDTO.getTemplateAllData(template);
 
-      return res.status(201).json({ success: true, template });
+      return res.status(201).json({ success: true, template: templateDTO });
     } catch (e) {
       next(e);
     }
@@ -50,7 +51,7 @@ class TemplateController {
     try {
       const { offset = 0, userId, sort } = req.body;
 
-      const list = await ParseTemplateModel.find(
+      const list = await TemplateModel.find(
         { userId },
         [
           "title",
@@ -59,6 +60,7 @@ class TemplateController {
           "dateCreated",
           "enabled",
           "parseTime",
+          "subscribers",
         ],
         {
           skip: offset || 0,
@@ -67,7 +69,7 @@ class TemplateController {
         }
       );
 
-      const listWithDTO = parseTemplateDTO.getTemplateAllDataByList(list);
+      const listWithDTO = TemplateDTO.getTemplateAllDataByList(list);
 
       return res.status(200).json({ success: true, list: listWithDTO });
     } catch (e) {
@@ -79,7 +81,7 @@ class TemplateController {
     try {
       const { id, enabled, parseTime } = req.body;
 
-      const parseTemplate = await ParseTemplateModel.findById(id);
+      const parseTemplate = await TemplateModel.findById(id);
 
       if (!parseTemplate) {
         throw ApiError.BadRequest("Cant find template with this id");
@@ -95,7 +97,7 @@ class TemplateController {
         CronService.stop(id);
       }
 
-      await ParseTemplateModel.updateOne(
+      await TemplateModel.updateOne(
         { _id: id },
         { enabled, parseTime: parseTime || 0 }
       );

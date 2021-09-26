@@ -1,7 +1,7 @@
 // models
 const UserModel = require("/models/User");
 const NotificationModel = require("/models/Notification");
-const ParseTemplateModel = require("/models/Template");
+const TemplateModel = require("/models/Template");
 
 // services
 const NotificationService = require("/services/notification");
@@ -56,7 +56,7 @@ class NotificationController {
     try {
       const { id, telegramChatId } = req.body;
 
-      const template = await ParseTemplateModel.findById(id);
+      const template = await TemplateModel.findById(id);
 
       if (!template) {
         throw ApiError.NotFound("Template is not found");

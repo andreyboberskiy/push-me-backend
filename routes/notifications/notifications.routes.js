@@ -31,14 +31,3 @@ router.post(
   checkValidMiddleware,
   Controller.getListByTemplate
 );
-// api/notifications/add-telegram
-const addTelegramValidation = [
-  check("chatId", "Chat id required").isNumeric().notEmpty(),
-];
-router.post(
-  routesByName.notifications.addTelegram,
-  authMiddleware,
-  addTelegramValidation,
-  checkValidMiddleware,
-  Controller.addTelegram
-);

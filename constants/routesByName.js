@@ -3,6 +3,7 @@ const authPrefix = "/auth";
 const parsePrefix = "/parse";
 const parseTemplatesPrefix = "/parse-templates";
 const notificationsPrefix = "/notifications";
+const userPrefix = "/user";
 
 const routesByName = {
   prefix: apiPrefix,
@@ -25,11 +26,14 @@ const routesByName = {
     list: "/list",
     turnParseEnabled: "/turn-parse",
   },
+  user: {
+    index: `${apiPrefix}${userPrefix}`,
+    addTelegramId: "/add-telegram-id",
+  },
   notifications: {
     index: `${apiPrefix}${notificationsPrefix}`,
     checkUpdatesNow: "/check-updates-now",
     getList: "/get-list",
-    addTelegram: "/add-telegram",
   },
 };
 

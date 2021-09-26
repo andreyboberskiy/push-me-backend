@@ -6,5 +6,5 @@ const TokenSchema = new Schema({
   refreshToken: { type: String, required: true },
 });
 
-TokenSchema.plugin(autoIncrement.plugin, "Token");
+TokenSchema.plugin(autoIncrement.plugin, { model: "Token", startAt: 1 });
 module.exports = model("Token", TokenSchema);

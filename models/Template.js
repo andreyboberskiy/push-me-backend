@@ -9,6 +9,7 @@ const TemplateSchema = new Schema({
   parseTime: { type: Object, required: true, default: null },
   url: { type: String, required: true },
   dateCreated: { type: Date, default: Date.now },
+  subscribers: { type: [Number], required: true },
   selectorsData: {
     parent: { type: String, required: true },
     selectors: [
@@ -22,6 +23,6 @@ const TemplateSchema = new Schema({
 });
 
 autoIncrement.initialize(mongoose.connection);
-TemplateSchema.plugin(autoIncrement.plugin, "Template");
+TemplateSchema.plugin(autoIncrement.plugin, { model: "Template", startAt: 1 });
 
 module.exports = model("Template", TemplateSchema);

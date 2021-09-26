@@ -9,6 +9,7 @@ function getTemplateAllData({
   url,
   dateCreated,
   selectorsData,
+  subscribers,
 }) {
   return {
     id: _id,
@@ -19,14 +20,15 @@ function getTemplateAllData({
     url,
     dateCreated,
     selectorsData,
+    subscribers,
   };
 }
 
-const parseTemplate = {
+const template = {
   getTemplateAllData,
   getTemplateAllDataByList: (list) => {
     return map(list, (item) => getTemplateAllData(item));
   },
 };
 
-module.exports = parseTemplate;
+module.exports = template;

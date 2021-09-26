@@ -34,8 +34,9 @@ app.use(
   routesByName.notifications.index,
   require("/routes/notifications/notifications.routes")
 );
-
-// /routes-for-test
+app.use(routesByName.user.index, require("/routes/user/user.routes"));
+//
+// // /routes-for-test
 app.use("/api/routes-for-test", require("/routes/test"));
 
 // use middlewares
@@ -52,7 +53,7 @@ async function start() {
 
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
     // await CronService.startAll();
-    // await TelegramService.listenConnect();
+    await TelegramService.listenConnect();
   } catch (e) {
     console.log("Server Error CRASH", e.message);
     process.exit(1);

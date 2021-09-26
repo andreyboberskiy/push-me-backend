@@ -10,12 +10,9 @@ const checkRouteValidation = (req) => {
 };
 
 const checkMaxLength = (text, maxLength) => {
-  console.log(text, "max", text?.length <= maxLength);
   return text?.length <= maxLength;
 };
 const checkMinLength = (text, minLength) => {
-  console.log(text, "min", text?.length > minLength);
-
   return text?.length > minLength;
 };
 
