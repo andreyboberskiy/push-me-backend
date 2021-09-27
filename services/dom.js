@@ -84,10 +84,13 @@ class DomService {
     return node;
   }
   getTextsByNodes(nodes) {
-    return nodes.map((item) => item.textContent.replace(/\s+/g, " ").trim());
+    return nodes.map((item) => this.getNodeByText(item));
   }
 
   getTextByNode(node) {
+    if (!node?.textContent) {
+      return "";
+    }
     return node.textContent.replace(/\s+/g, " ").trim();
   }
 

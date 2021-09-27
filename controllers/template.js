@@ -30,7 +30,7 @@ class TemplateController {
 
       const templateData = {
         title,
-        url,
+        url: decodeURI(url),
         selectorsData,
         userId,
         parseTime,

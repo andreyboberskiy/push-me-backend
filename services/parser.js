@@ -32,17 +32,15 @@ class ParserService {
   async parseTemplate(template) {
     try {
       const { url, selectorsData } = template;
-
+      console.log("kek");
       const DOM = await this.getDOM(url);
 
       const allParentNodes = DOM.querySelectorAll(selectorsData.parent);
-
       if (!allParentNodes.length) {
         throw ApiError.NotFound(
           `Could not find elements by this parent selector: ${selectorsData.parent}`
         );
       }
-
       // remove excludes selectors
       const filteredParents = [];
       const excludedSelectors = [];
@@ -65,22 +63,26 @@ class ParserService {
 
       // Take newest item
       const parent = filteredParents[0];
-
       const templateNewestValues = map(
         selectorsData.selectors,
         ({ selector, title }) => {
+          forEach(filteredParents, (par) => {
+            const parNode = par.querySelector(selector);
+            console.log(DOMService.getTextByNode(parNode));
+          });
+
           const node = parent.querySelector(selector);
           const text = DOMService.getTextByNode(node);
 
           return { title, text };
         }
       );
-
+      // console.log(DOMService.getTextsByNodes(filteredParents));
       console.log({ templateNewestValues });
 
       return templateNewestValues;
     } catch (e) {
-      throw ApiError.NotFound(`Error. Func: parseByParseTemplate`, e);
+      throw ApiError.NotFound(`Error. Func: parseByParseTemplate`, [e]);
     }
   }
 
