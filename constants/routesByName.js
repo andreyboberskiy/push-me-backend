@@ -1,7 +1,7 @@
 const apiPrefix = "/api";
 const authPrefix = "/auth";
 const parsePrefix = "/parse";
-const parseTemplatesPrefix = "/parse-templates";
+const templatesPrefix = "/templates";
 const notificationsPrefix = "/notifications";
 const userPrefix = "/user";
 
@@ -20,11 +20,12 @@ const routesByName = {
     byHTMLSelectorWithPage: "/by-html-selector-with-page",
     byTextQueryWithPage: "/by-text-query-with-page",
   },
-  parseTemplates: {
-    index: `${apiPrefix}${parseTemplatesPrefix}`,
+  templates: {
+    index: `${apiPrefix}${templatesPrefix}`,
     create: "/create",
     list: "/list",
     turnParseEnabled: "/turn-parse",
+    getTemplate: "/:id",
   },
   user: {
     index: `${apiPrefix}${userPrefix}`,

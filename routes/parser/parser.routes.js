@@ -32,7 +32,6 @@ router.post(routesByName.parse.byHTMLSelector, authMiddleware, [
 router.post(routesByName.parse.byTextQuery, authMiddleware, [
   check("url", "Url is empty").notEmpty(),
   check("selectorQuery", "Empty selector query").notEmpty(),
-  check("approvedQueries", "Approved Queries is not specified").isArray(),
   checkValidMiddleware,
   ParserController.byTextQuery,
 ]);

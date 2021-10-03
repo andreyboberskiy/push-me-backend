@@ -16,29 +16,36 @@ const Controller = require("/controllers/template");
 // validation
 
 const validation = require("./validate");
+// api/templates/:id
+router.get(
+  routesByName.templates.getTemplate,
+  authMiddleware,
+  checkValidMiddleware,
+  Controller.getTemplate
+);
 
-// api/parse-templates/create
+// api/template/create
 router.post(
-  routesByName.parseTemplates.create,
+  routesByName.templates.create,
   authMiddleware,
   validation.create,
   checkValidMiddleware,
   Controller.create
 );
 
-// api/parse-templates/list
+// api/template/list
 // const listValidation = [
 //   check("offset", "Offset is required").isNumeric().isInt(),
 // ];
 router.post(
-  routesByName.parseTemplates.list,
+  routesByName.templates.list,
   authMiddleware,
   // listValidation,
   // checkValidMiddleware,
   Controller.getList
 );
 
-// api/parse-templates/turn-parse
+// api/template/turn-parse
 const turnParseValidation = [
   check("id", "Id required").isString().notEmpty(),
   check("enabled", "Enabled is not specified").isBoolean().notEmpty(),
@@ -51,10 +58,11 @@ const turnParseValidation = [
   ),
 ];
 router.put(
-  routesByName.parseTemplates.turnParseEnabled,
+  routesByName.templates.turnParseEnabled,
   authMiddleware,
   turnParseValidation,
   checkValidMiddleware,
   Controller.turnEnabled
 );
+
 module.exports = router;

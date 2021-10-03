@@ -12,6 +12,17 @@ const ApiError = require("/exceptions/api-error");
 const TemplateDTO = require("/dto/template");
 
 class TemplateController {
+  async getTemplate(req, res, next) {
+    try {
+      const { id } = req.params;
+
+      const template = await TemplateService.getTemplateById(id);
+
+      return res.status(200).json({ template });
+    } catch (e) {
+      next(e);
+    }
+  }
   async create(req, res, next) {
     try {
       const { title, url, selectorsData, userId, parseTime, enabled } =

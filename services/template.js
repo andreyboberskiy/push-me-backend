@@ -5,6 +5,9 @@ const TemplateModel = require("/models/Template");
 const ParserService = require("/services/parser");
 const NotificationService = require("/services/notification");
 
+// DTO
+const TemplateDTO = require("/dto/template");
+
 // exceptions
 const ApiError = require("/exceptions/api-error");
 
@@ -23,7 +26,7 @@ class TemplateService {
     if (!template) {
       throw ApiError.NotFound(`Cant find template by this id ${id}`);
     }
-    return template;
+    return TemplateDTO.getTemplateAllData(template);
   }
   async checkUpdates(templateId) {
     const template = await this.getTemplateById(templateId);

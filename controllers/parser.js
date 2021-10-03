@@ -9,7 +9,7 @@ const { map } = require("lodash");
 class ParserController {
   async byTextQuery(req, res, next) {
     try {
-      const { url, selectorQuery, approvedQueries } = req.body;
+      const { url, selectorQuery } = req.body;
 
       const DOM = await ParseServices.getDOM(decodeURI(url));
 

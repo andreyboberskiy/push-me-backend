@@ -27,8 +27,8 @@ app.use(requestLimitMiddleware);
 app.use(routesByName.auth.index, require("/routes/auth/auth.routes"));
 app.use(routesByName.parse.index, require("/routes/parser/parser.routes"));
 app.use(
-  routesByName.parseTemplates.index,
-  require("/routes/parseTemplates/parseTemplates.routes")
+  routesByName.templates.index,
+  require("/routes/templates/templates.routes")
 );
 app.use(
   routesByName.notifications.index,
