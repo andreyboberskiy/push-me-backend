@@ -1,3 +1,5 @@
+const { filter } = require("lodash");
+
 // models
 const TemplateModel = require("/models/Template");
 
@@ -120,12 +122,46 @@ class TemplateController {
         throw ApiError.BadRequest("User already subscribed on this template");
       }
 
-      CronService.addForNotify(template);
-      await TemplateModel.updateOne(
+      if (!template.enabled) {
+        CronService.addForNotify(template);
+      }
+
+      const newTemplate = await TemplateModel.updateOne(
         { _id: templateId },
         { subscribers: [...template.subscribers, userId], enabled: true }
       );
-      return res.status(200).json({ success: true });
+      return res.status(200).json({ template: newTemplate });
+    } catch (e) {
+      next(e);
+    }
+  }
+  async unsubscribe(req, res, next) {
+    try {
+      const { id: templateId, userId } = req.body;
+
+      const template = await TemplateService.getTemplateById(templateId);
+
+      const isSubscribed = template.subscribers.includes(userId);
+
+      if (!isSubscribed) {
+        throw ApiError.BadRequest("User is not subscribed on this template");
+      }
+
+      const newSubscribers = filter(
+        template.subscribers,
+        (subscriberId) => subscriberId !== userId
+      );
+
+      const newTemplate = await TemplateModel.updateOne(
+        { _id: templateId },
+        { subscribers: newSubscribers, enabled: newSubscribers.length > 0 }
+      );
+
+      if (newSubscribers.length <= 0) {
+        CronService.removeTemplate(template.id);
+      }
+
+      return res.status(200).json({ template: newTemplate });
     } catch (e) {
       next(e);
     }

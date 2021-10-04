@@ -26,10 +26,12 @@ const routesByName = {
     list: "/list",
     turnParseEnabled: "/turn-parse",
     subscribe: "/subscribe",
+    unsubscribe: "/unsubscribe",
     getTemplate: "/:id",
   },
   user: {
     index: `${apiPrefix}${userPrefix}`,
+    getUser: ``,
     addTelegramId: "/add-telegram-id",
   },
   notifications: {

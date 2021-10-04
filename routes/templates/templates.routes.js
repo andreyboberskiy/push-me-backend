@@ -74,5 +74,16 @@ router.post(
   checkValidMiddleware,
   Controller.subscribe
 );
+const unSubscribeValidation = [
+  check("id", "Id required").isNumeric().notEmpty(),
+];
+// api/template/unsubscribe
+router.post(
+  routesByName.templates.unsubscribe,
+  authMiddleware,
+  unSubscribeValidation,
+  checkValidMiddleware,
+  Controller.unsubscribe
+);
 
 module.exports = router;

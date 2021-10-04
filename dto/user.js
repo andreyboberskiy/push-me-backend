@@ -1,8 +1,12 @@
 const userDTO = {
-  getUserData: ({ _id, email, telegramChatId }) => ({
-    id: _id,
+  getUserData: ({ id, email, telegramChatId, name, surname, dateCreated }) => ({
+    id,
     email,
     telegramChatId,
+    name,
+    surname,
+    dateCreated,
+    image: undefined,
   }),
 };
 

@@ -23,5 +23,7 @@ router.post(
   checkValidMiddleware,
   UserController.addTelegramId
 );
+// /api/user
+router.get(routesByName.user.getUser, authMiddleware, UserController.getUser);
 
 module.exports = router;

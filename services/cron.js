@@ -23,6 +23,7 @@ class CronService {
     const job = new CronJob(time, fn, null, true);
     this._jobs[id] = job;
     job.start();
+    console.log(`Job id=${id} has been started. All jobs now: `, this._jobs);
   }
   addForNotify(template) {
     const { id, parseTime } = template;
@@ -32,8 +33,10 @@ class CronService {
   }
   stop(id) {
     if (!this._jobs[id]) return;
-    this._jobs[id]?.stop();
+    this._jobs[id].stop();
     delete this._jobs[id];
+
+    console.log(`Job id=${id} has been stopped. All jobs now: `, this._jobs);
   }
 
   stopAll() {
@@ -44,7 +47,7 @@ class CronService {
       }
     }
   }
-  list() {
+  getJobs() {
     return this._jobs;
   }
 
@@ -74,6 +77,10 @@ class CronService {
     } catch (e) {
       throw ApiError.BadRequest("Cant start all jobs");
     }
+  }
+
+  removeTemplate(id) {
+    this.stop(id);
   }
 }
 

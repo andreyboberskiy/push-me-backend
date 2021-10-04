@@ -16,7 +16,7 @@ const UserDTO = require("/dto/user");
 class AuthController {
   async signUp(req, res, next) {
     try {
-      const { email, password } = req.body;
+      const { email, password, name, surname } = req.body;
       const candidate = await UserModel.findOne({ email });
 
       if (candidate) {
@@ -27,10 +27,18 @@ class AuthController {
       }
 
       const hashedPass = await bcrypt.hash(password, 2);
-      const user = new UserModel({ email, password: hashedPass });
+      const user = new UserModel({
+        email,
+        password: hashedPass,
+        name,
+        surname,
+      });
 
       await user.save();
-      return res.status(201).json({ message: "User created" });
+
+      return res
+        .status(201)
+        .json({ message: "User created", user: UserDTO.getUserData(user) });
     } catch (e) {
       next(e);
     }

@@ -82,12 +82,12 @@ class NotificationService {
       allSubscribersData,
       (user) => user.telegramChatId
     );
-
     forEach(allSubscribersTelegramIds, (id) => {
-      TelegramService.pushMessage(id, messageText);
+      if (id) {
+        TelegramService.pushMessage(id, messageText);
+        console.log("Notified");
+      }
     });
-
-    console.log("Notified");
   }
 }
 
