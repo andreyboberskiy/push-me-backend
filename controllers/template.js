@@ -15,8 +15,9 @@ class TemplateController {
   async getTemplate(req, res, next) {
     try {
       const { id } = req.params;
+      const { userId } = req.body;
 
-      const template = await TemplateService.getTemplateById(id);
+      const template = await TemplateService.getTemplateById(id, userId);
 
       return res.status(200).json({ template });
     } catch (e) {
@@ -43,9 +44,10 @@ class TemplateController {
         title,
         url: decodeURI(url),
         selectorsData,
-        userId,
+        creatorId: userId,
         parseTime,
         enabled,
+        subscribers: [],
       };
 
       const template = await TemplateService.create(templateData);
@@ -62,25 +64,13 @@ class TemplateController {
     try {
       const { offset = 0, userId, sort } = req.body;
 
-      const list = await TemplateModel.find(
-        { userId },
-        [
-          "title",
-          "selectorsData",
-          "url",
-          "dateCreated",
-          "enabled",
-          "parseTime",
-          "subscribers",
-        ],
-        {
-          skip: offset || 0,
-          limit: 10,
-          sort: { dateCreated: sort === "newest" ? -1 : 1 },
-        }
-      );
+      const list = await TemplateModel.find({ creatorId: userId }, [], {
+        skip: offset || 0,
+        limit: 10,
+        sort: { dateCreated: sort === "newest" ? -1 : 1 },
+      });
 
-      const listWithDTO = TemplateDTO.getTemplateAllDataByList(list);
+      const listWithDTO = TemplateDTO.getTemplateAllDataByList(list, userId);
 
       return res.status(200).json({ success: true, list: listWithDTO });
     } catch (e) {
@@ -113,6 +103,28 @@ class TemplateController {
         { enabled, parseTime: parseTime || 0 }
       );
 
+      return res.status(200).json({ success: true });
+    } catch (e) {
+      next(e);
+    }
+  }
+  async subscribe(req, res, next) {
+    try {
+      const { id: templateId, userId } = req.body;
+
+      const template = await TemplateService.getTemplateById(templateId);
+
+      const isAlreadySubscribed = template.subscribers.includes(userId);
+
+      if (isAlreadySubscribed) {
+        throw ApiError.BadRequest("User already subscribed on this template");
+      }
+
+      CronService.addForNotify(template);
+      await TemplateModel.updateOne(
+        { _id: templateId },
+        { subscribers: [...template.subscribers, userId], enabled: true }
+      );
       return res.status(200).json({ success: true });
     } catch (e) {
       next(e);

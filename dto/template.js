@@ -1,21 +1,24 @@
 const map = require("lodash/map");
 
-function getTemplateAllData({
-  _id,
-  userId,
-  title,
-  enabled,
-  parseTime,
-  url,
-  dateCreated,
-  selectorsData,
-  subscribers,
-}) {
-  return {
-    id: _id,
-    userId,
+function getTemplateAllData(
+  {
+    _id,
+    creatorId,
     title,
     enabled,
+    parseTime,
+    url,
+    dateCreated,
+    selectorsData,
+    subscribers,
+  },
+  userId
+) {
+  return {
+    id: _id,
+    creatorId,
+    title,
+    enabled: subscribers.includes(userId),
     parseTime,
     url,
     dateCreated,
@@ -26,8 +29,8 @@ function getTemplateAllData({
 
 const template = {
   getTemplateAllData,
-  getTemplateAllDataByList: (list) => {
-    return map(list, (item) => getTemplateAllData(item));
+  getTemplateAllDataByList: (list, userId) => {
+    return map(list, (item) => getTemplateAllData(item, userId));
   },
 };
 

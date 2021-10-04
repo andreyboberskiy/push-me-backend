@@ -52,7 +52,7 @@ async function start() {
     mongoose.set("useFindAndModify", false);
 
     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-    // await CronService.startAll();
+    await CronService.startAll();
     await TelegramService.listenConnect();
   } catch (e) {
     console.log("Server Error CRASH", e.message);

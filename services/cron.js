@@ -9,6 +9,7 @@ const UserModel = require("/models/User");
 
 // services
 const NotificationService = require("/services/notification");
+const TemplateService = require("/services/template");
 
 // DTO
 
@@ -23,12 +24,10 @@ class CronService {
     this._jobs[id] = job;
     job.start();
   }
-  addForNotify(template, user) {
+  addForNotify(template) {
     const { id, parseTime } = template;
     this.add(id, this.getTime(parseTime), () =>
-      NotificationService.checkUpdates(template, {
-        telegramChatId: user.telegramChatId,
-      })
+      TemplateService.checkUpdates(id)
     );
   }
   stop(id) {
@@ -55,10 +54,10 @@ class CronService {
         return `*/${time.s} * * * * *`;
       }
       if (time.m) {
-        return `* /${time.m} * * * *`;
+        return `*/${time.m} * * * *`;
       }
       if (time.h) {
-        return `* * /${time.m} * * *`;
+        return `* * */${time.h} * * *`;
       }
     } catch (e) {
       throw ApiError.BadRequest("Cant parse time for cron");
@@ -68,10 +67,7 @@ class CronService {
     try {
       const templates = await TemplateModel.find({ enabled: true });
       for (let i = 0; i < templates.length; i++) {
-        const user = await UserModel.findById(templates[i].userId);
-        if (user) {
-          this.addForNotify(templateDTO.getTemplateAllData(templates[i]), user);
-        }
+        this.addForNotify(templateDTO.getTemplateAllData(templates[i]));
       }
 
       console.log("All jobs started. Jobs now: ", this._jobs);

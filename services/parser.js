@@ -32,7 +32,6 @@ class ParserService {
   async parseTemplate(template) {
     try {
       const { url, selectorsData } = template;
-      console.log("kek");
       const DOM = await this.getDOM(url);
 
       const allParentNodes = DOM.querySelectorAll(selectorsData.parent);

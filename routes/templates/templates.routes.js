@@ -65,4 +65,14 @@ router.put(
   Controller.turnEnabled
 );
 
+const subscribeValidation = [check("id", "Id required").isNumeric().notEmpty()];
+// api/template/subscribe
+router.post(
+  routesByName.templates.subscribe,
+  authMiddleware,
+  subscribeValidation,
+  checkValidMiddleware,
+  Controller.subscribe
+);
+
 module.exports = router;

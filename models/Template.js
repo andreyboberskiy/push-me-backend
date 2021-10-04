@@ -3,7 +3,7 @@ const autoIncrement = require("mongoose-auto-increment");
 const mongoose = require("mongoose");
 
 const TemplateSchema = new Schema({
-  userId: { type: Number, ref: "User" },
+  creatorId: { type: Number, ref: "User" },
   title: { type: String, required: true },
   enabled: { type: Boolean, required: true, default: false },
   parseTime: { type: Object, required: true, default: null },

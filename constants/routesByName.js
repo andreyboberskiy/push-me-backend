@@ -25,6 +25,7 @@ const routesByName = {
     create: "/create",
     list: "/list",
     turnParseEnabled: "/turn-parse",
+    subscribe: "/subscribe",
     getTemplate: "/:id",
   },
   user: {

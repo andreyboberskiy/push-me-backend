@@ -13,20 +13,19 @@ const ApiError = require("/exceptions/api-error");
 
 class TemplateService {
   async create(dataForModel) {
-    const subscribers = [dataForModel.userId];
-    const template = await new TemplateModel({ ...dataForModel, subscribers });
+    const template = await new TemplateModel(dataForModel);
 
     await template.save();
 
     return template;
   }
-  async getTemplateById(id) {
+  async getTemplateById(id, userId) {
     const template = await TemplateModel.findById(id);
 
     if (!template) {
       throw ApiError.NotFound(`Cant find template by this id ${id}`);
     }
-    return TemplateDTO.getTemplateAllData(template);
+    return TemplateDTO.getTemplateAllData(template, userId);
   }
   async checkUpdates(templateId) {
     const template = await this.getTemplateById(templateId);
