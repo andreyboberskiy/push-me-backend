@@ -16,7 +16,7 @@ const checkValidMiddleware = require("/middlewares/checkValid.middleware");
 const router = Router();
 
 // /api/user/add-telegram-id
-router.post(
+router.put(
   routesByName.user.addTelegramId,
   authMiddleware,
   validation.addTelegramId,

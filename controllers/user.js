@@ -13,14 +13,12 @@ const ApiError = require("/exceptions/api-error");
 class UserController {
   async addTelegramId(req, res, next) {
     try {
-      const { chatId, userId } = req.body;
+      const { id: chatId, userId } = req.body;
 
-      await UserModel.findOneAndUpdate(
-        { _id: userId },
-        {
-          telegramChatId: chatId,
-        }
-      );
+      const user = await UserModel.findById(userId);
+
+      user.telegramChatId = chatId;
+      user.save();
 
       const { refreshToken } = await TokenService.generateTokens({
         userId,
@@ -29,7 +27,9 @@ class UserController {
 
       await TokenService.saveToken(userId, refreshToken);
 
-      return res.status(200).json({ chatId, refreshToken });
+      return res
+        .status(200)
+        .json({ chatId, refreshToken, user: UserDTO.getUserData(user) });
     } catch (e) {
       next(e);
     }
