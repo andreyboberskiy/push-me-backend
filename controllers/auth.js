@@ -49,14 +49,20 @@ class AuthController {
       const { email, password } = req.body;
 
       const user = await UserModel.findOne({ email });
+
+      console.log({ user, email });
       if (!user) {
-        throw ApiError.BadRequest("User not found");
+        throw ApiError.BadRequest("User not found", {
+          email: "User with this email not found",
+        });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
 
       if (!isMatch) {
-        throw ApiError.BadRequest("Password Incorrect");
+        throw ApiError.BadRequest("Password Incorrect", {
+          password: "Password incorrect",
+        });
       }
 
       const { accessToken, refreshToken } = await TokenService.generateTokens({

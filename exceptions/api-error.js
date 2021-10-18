@@ -1,12 +1,12 @@
 module.exports = class ApiError extends Error {
   status;
-  errors;
+  validationErrors;
 
   constructor(status, message, errors = []) {
     super(message);
 
     this.status = status;
-    this.errors = errors;
+    this.validationErrors = errors;
   }
 
   static unAuthorizedError() {

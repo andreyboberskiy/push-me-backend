@@ -29,7 +29,7 @@ router.post(
 router.post(
   routesByName.auth.signIn,
   [
-    check("email", "Invalid email").normalizeEmail().isEmail(),
+    check("email", "Invalid email").isEmail(),
     check("password", "Invalid password").exists(),
   ],
   checkValidMiddleware,
