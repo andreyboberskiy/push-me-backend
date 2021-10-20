@@ -23,7 +23,7 @@ const routesByName = {
   templates: {
     index: `${apiPrefix}${templatesPrefix}`,
     create: "/create",
-    list: "/list",
+    myList: "/my-list",
     turnParseEnabled: "/turn-parse",
     subscribe: "/subscribe",
     unsubscribe: "/unsubscribe",

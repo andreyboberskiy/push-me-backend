@@ -33,19 +33,19 @@ router.post(
   Controller.create
 );
 
-// api/template/list
+// api/templates/my-list
 // const listValidation = [
 //   check("offset", "Offset is required").isNumeric().isInt(),
 // ];
 router.post(
-  routesByName.templates.list,
+  routesByName.templates.myList,
   authMiddleware,
   // listValidation,
   // checkValidMiddleware,
-  Controller.getList
+  Controller.getMyList
 );
 
-// api/template/turn-parse
+// api/templates/turn-parse
 const turnParseValidation = [
   check("id", "Id required").isString().notEmpty(),
   check("enabled", "Enabled is not specified").isBoolean().notEmpty(),

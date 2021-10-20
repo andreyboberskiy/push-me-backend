@@ -62,7 +62,7 @@ class TemplateController {
     }
   }
 
-  async getList(req, res, next) {
+  async getMyList(req, res, next) {
     try {
       const { offset = 0, userId, sort } = req.body;
 
