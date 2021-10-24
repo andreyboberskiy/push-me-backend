@@ -14,9 +14,9 @@ const routesByName = require("/constants/routesByName");
 const Controller = require("/controllers/template");
 
 // validation
-
 const validation = require("./validate");
-// api/templates/:id
+
+// api/template/:id
 router.get(
   routesByName.templates.getTemplate,
   authMiddleware,
@@ -49,14 +49,8 @@ router.post(
 const turnParseValidation = [
   check("id", "Id required").isString().notEmpty(),
   check("enabled", "Enabled is not specified").isBoolean().notEmpty(),
-  check("parseTime", "Parse time is not specified").custom(
-    async (parseTime, { req }) => {
-      if (!parseTime && req.body.enabled) {
-        throw new Error("Parse time in not specified");
-      }
-    }
-  ),
 ];
+
 router.put(
   routesByName.templates.turnParseEnabled,
   authMiddleware,
@@ -65,25 +59,11 @@ router.put(
   Controller.turnEnabled
 );
 
-const subscribeValidation = [check("id", "Id required").isNumeric().notEmpty()];
-// api/template/subscribe
+// api/template/update-image
 router.post(
-  routesByName.templates.subscribe,
+  routesByName.templates.updateImage,
   authMiddleware,
-  subscribeValidation,
-  checkValidMiddleware,
-  Controller.subscribe
-);
-const unSubscribeValidation = [
-  check("id", "Id required").isNumeric().notEmpty(),
-];
-// api/template/unsubscribe
-router.post(
-  routesByName.templates.unsubscribe,
-  authMiddleware,
-  unSubscribeValidation,
-  checkValidMiddleware,
-  Controller.unsubscribe
+  Controller.updateImage
 );
 
 module.exports = router;

@@ -21,7 +21,7 @@ class TemplateController {
 
       const template = await TemplateService.getTemplateById(id, userId);
 
-      return res.status(200).json({ template });
+      return res.status(200).json(template);
     } catch (e) {
       next(e);
     }
@@ -48,8 +48,8 @@ class TemplateController {
         selectorsData,
         creatorId: userId,
         parseTime,
-        enabled,
-        subscribers: [],
+        working: enabled,
+        subscribers: enabled ? [userId] : [],
       };
 
       const template = await TemplateService.create(templateData);
@@ -82,86 +82,45 @@ class TemplateController {
 
   async turnEnabled(req, res, next) {
     try {
-      const { id, enabled, parseTime } = req.body;
+      const { id, enabled, userId } = req.body;
 
-      const parseTemplate = await TemplateModel.findById(id);
+      const template = await TemplateService.getTemplateById(id);
+      let userTemplate = await TemplateService.getTemplateById(id, userId);
 
-      if (!parseTemplate) {
-        throw ApiError.BadRequest("Cant find template with this id");
+      if (enabled && !userTemplate.enabled) {
+        if (!template.working) {
+          CronService.addForNotify(template);
+          template.working = true;
+          template.subscribers = [...template.subscribers, userId];
+        } else {
+          template.subscribers = [...template.subscribers, userId];
+        }
       }
+      if (!enabled) {
+        template.subscribers = template.subscribers.filter(
+          (id) => id !== userId
+        );
 
-      if (enabled && !parseTemplate.enabled) {
-        CronService.add(id, CronService.getTime(parseTime), () => {});
+        if (template.subscribers.length === 0) {
+          CronService.stop(id);
+          template.working = false;
+        }
       }
-      if (!enabled && parseTemplate.enabled) {
-        CronService.stop(id);
-      }
-      if (!enabled && parseTemplate.enabled) {
-        CronService.stop(id);
-      }
+      await template.save();
 
-      await TemplateModel.updateOne(
-        { _id: id },
-        { enabled, parseTime: parseTime || 0 }
-      );
+      userTemplate = await TemplateService.getTemplateById(id, userId);
 
-      return res.status(200).json({ success: true });
+      return res.status(200).json(userTemplate);
     } catch (e) {
       next(e);
     }
   }
-  async subscribe(req, res, next) {
+  async updateImage(req, res, next) {
     try {
-      const { id: templateId, userId } = req.body;
+      console.log("LEL");
+      console.log({ req });
 
-      const template = await TemplateService.getTemplateById(templateId);
-
-      const isAlreadySubscribed = template.subscribers.includes(userId);
-
-      if (isAlreadySubscribed) {
-        throw ApiError.BadRequest("User already subscribed on this template");
-      }
-
-      if (!template.enabled) {
-        CronService.addForNotify(template);
-      }
-
-      const newTemplate = await TemplateModel.updateOne(
-        { _id: templateId },
-        { subscribers: [...template.subscribers, userId], enabled: true }
-      );
-      return res.status(200).json({ template: newTemplate });
-    } catch (e) {
-      next(e);
-    }
-  }
-  async unsubscribe(req, res, next) {
-    try {
-      const { id: templateId, userId } = req.body;
-
-      const template = await TemplateService.getTemplateById(templateId);
-
-      const isSubscribed = template.subscribers.includes(userId);
-
-      if (!isSubscribed) {
-        throw ApiError.BadRequest("User is not subscribed on this template");
-      }
-
-      const newSubscribers = filter(
-        template.subscribers,
-        (subscriberId) => subscriberId !== userId
-      );
-
-      const newTemplate = await TemplateModel.updateOne(
-        { _id: templateId },
-        { subscribers: newSubscribers, enabled: newSubscribers.length > 0 }
-      );
-
-      if (newSubscribers.length <= 0) {
-        CronService.removeTemplate(template.id);
-      }
-
-      return res.status(200).json({ template: newTemplate });
+      return res.status(200).json({});
     } catch (e) {
       next(e);
     }

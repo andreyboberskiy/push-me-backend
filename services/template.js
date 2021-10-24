@@ -25,10 +25,20 @@ class TemplateService {
     if (!template) {
       throw ApiError.NotFound(`Cant find template by this id ${id}`);
     }
-    return TemplateDTO.getTemplateAllData(template, userId);
+
+    if (userId) {
+      return TemplateDTO.getTemplateAllData(template, userId);
+    }
+    return template;
   }
   async checkUpdates(templateId) {
     const template = await this.getTemplateById(templateId);
+
+    if (!template.subscribers.length) {
+      template.enabled = false;
+      await template.save();
+    }
+
     const newestValues = await ParserService.parseTemplate(template);
 
     const lastNotification =

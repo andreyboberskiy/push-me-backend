@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const TemplateSchema = new Schema({
   creatorId: { type: Number, ref: "User" },
   title: { type: String, required: true },
-  enabled: { type: Boolean, required: true, default: false },
+  working: { type: Boolean, required: true, default: false },
   parseTime: { type: Object, required: true, default: null },
   url: { type: String, required: true },
   dateCreated: { type: Date, default: Date.now },

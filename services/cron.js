@@ -68,7 +68,7 @@ class CronService {
   }
   async startAll() {
     try {
-      const templates = await TemplateModel.find({ enabled: true });
+      const templates = await TemplateModel.find({ working: true });
       for (let i = 0; i < templates.length; i++) {
         this.addForNotify(templateDTO.getTemplateAllData(templates[i]));
       }

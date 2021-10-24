@@ -49,6 +49,7 @@ const validate = {
       selectorsCustomValidation
     ),
   ],
+  updateImage: [check("id", "Field is required").notEmpty()],
 };
 
 module.exports = validate;

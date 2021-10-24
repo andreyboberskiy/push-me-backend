@@ -6,6 +6,7 @@ function getTemplateAllData(
     creatorId,
     title,
     enabled,
+    working,
     parseTime,
     url,
     dateCreated,
@@ -17,6 +18,7 @@ function getTemplateAllData(
   return {
     id: _id,
     creatorId,
+    isCreator: creatorId === userId,
     title,
     enabled: subscribers.includes(userId),
     parseTime,

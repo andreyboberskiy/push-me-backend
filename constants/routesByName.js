@@ -27,6 +27,7 @@ const routesByName = {
     turnParseEnabled: "/turn-parse",
     subscribe: "/subscribe",
     unsubscribe: "/unsubscribe",
+    updateImage: "/update-image",
     getTemplate: "/:id",
   },
   user: {

@@ -2,6 +2,9 @@ require("sexy-require");
 const express = require("express");
 const mongoose = require("mongoose");
 const autoIncrement = require("mongoose-auto-increment");
+const bodyParser = require("body-parser");
+const multer = require("multer");
+const upload = multer();
 
 // configs
 const dotenv = require("dotenv");
@@ -21,8 +24,13 @@ const TelegramService = require("/services/telegram");
 const app = express();
 
 app.use(express.json({ extended: true }));
+app.use(upload.array());
 
 app.use(requestLimitMiddleware);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
+// in latest body-parser use like below.
+app.use(bodyParser.urlencoded({ extended: true }));
 // routes
 app.use(routesByName.auth.index, require("/routes/auth/auth.routes"));
 app.use(routesByName.parse.index, require("/routes/parser/parser.routes"));
